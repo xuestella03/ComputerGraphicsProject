@@ -137,9 +137,60 @@ function VBObox0() {
   void main() {
     gl_FragColor = vec4(v_Colr0, 1.0);
   }`;
+  var xcount = 100;			// # of lines to draw in x,y to make the grid.
+		var ycount = 100;		
+		var xymax	= 50.0;			// grid size; extends to cover +/-xymax in x and y.
+		 var xColr = new Float32Array([0.6, 0.6, 0.6]);	// bright yellow
+		 var yColr = new Float32Array([0.6, 0.6, 0.6]);	// bright green.
+		 
+		
+							
+		var xgap = xymax/(xcount-1);		// HALF-spacing between lines in x,y;
+		var ygap = xymax/(ycount-1);		// (why half? because v==(0line number/2))
+		
+	gndVerts = new Float32Array(7*2*(xcount+ycount)+42);
+	// this.vboContents = //--------------------------------------------------------
 
-	this.vboContents = //---------------------------------------------------------
-	new Float32Array ([						// Array of vertex attribute values we will
+    // First, step thru x values as we make vertical lines of constant-x:
+		for(v=0, j=0; v<2*xcount; v++, j+= 7) {
+			if(v%2==0) {	// put even-numbered vertices at (xnow, -xymax, 0)
+				gndVerts[j  ] = -xymax + (v  )*xgap;	// x
+				gndVerts[j+1] = -xymax;								// y
+				gndVerts[j+2] = 0.0;									// z
+				gndVerts[j+3] = 1.0;									// w.
+			}
+			else {				// put odd-numbered vertices at (xnow, +xymax, 0).
+				gndVerts[j  ] = -xymax + (v-1)*xgap;	// x
+				gndVerts[j+1] = xymax;								// y
+				gndVerts[j+2] = 0.0;									// z
+				gndVerts[j+3] = 1.0;									// w.
+			}
+			gndVerts[j+4] = xColr[0];			// red
+			gndVerts[j+5] = xColr[1];			// grn
+			gndVerts[j+6] = xColr[2];			// blu
+		}
+		// Second, step thru y values as wqe make horizontal lines of constant-y:
+		// (don't re-initialize j--we're adding more vertices to the array)
+		for(v=0; v<2*ycount; v++, j+= 7) {
+			if(v%2==0) {		// put even-numbered vertices at (-xymax, ynow, 0)
+				gndVerts[j  ] = -xymax;								// x
+				gndVerts[j+1] = -xymax + (v  )*ygap;	// y
+				gndVerts[j+2] = 0.0;									// z
+				gndVerts[j+3] = 1.0;									// w.
+			}
+			else {					// put odd-numbered vertices at (+xymax, ynow, 0).
+				gndVerts[j  ] = xymax;								// x
+				gndVerts[j+1] = -xymax + (v-1)*ygap;	// y
+				gndVerts[j+2] = 0.0;									// z
+				gndVerts[j+3] = 1.0;									// w.
+			}
+			gndVerts[j+4] = yColr[0];			// red
+			gndVerts[j+5] = yColr[1];			// grn
+			gndVerts[j+6] = yColr[2];			// blu
+		}
+    
+  
+  axes = new Float32Array ([						// Array of vertex attribute values we will
   															// transfer to GPU's vertex buffer object (VBO)
 	// 1st triangle:
   	 0.0,	 0.0,	0.0, 1.0,		1.0, 1.0, 1.0, //1 vertex:pos x,y,z,w; color: r,g,b  X AXIS
@@ -151,14 +202,20 @@ function VBObox0() {
   	 0.0,	 0.0,	0.0, 1.0,		1.0, 1.0, 1.0, // Z AXIS
      0.0,  0.0, 1.0, 1.0,		0.0, 0.2, 1.0,
      
-     // 2 long lines of the ground grid:
-  	 -100.0,   0.2,	0.0, 1.0,		1.0, 0.2, 0.0, // horiz line
-      100.0,   0.2, 0.0, 1.0,		0.0, 0.2, 1.0,
-  	  0.2,	-100.0,	0.0, 1.0,		0.0, 1.0, 0.0, // vert line
-      0.2,   100.0, 0.0, 1.0,		1.0, 0.0, 1.0,
+    //  // 2 long lines of the ground grid:
+  	//  -100.0,   0.2,	0.0, 1.0,		1.0, 0.2, 0.0, // horiz line
+    //   100.0,   0.2, 0.0, 1.0,		0.0, 0.2, 1.0,
+  	//   0.2,	-100.0,	0.0, 1.0,		0.0, 1.0, 0.0, // vert line
+    //   0.2,   100.0, 0.0, 1.0,		1.0, 0.0, 1.0,
 		 ]);
+  
+  for(i=0;i<42;i++,j++) {
+    gndVerts[j] = axes[i];
+  }
 
-	this.vboVerts = 10;						// # of vertices held in 'vboContents' array
+  this.vboContents = gndVerts;
+
+	this.vboVerts = 2*(xcount+ycount)+6;						// # of vertices held in 'vboContents' array
 	this.FSIZE = this.vboContents.BYTES_PER_ELEMENT;
 	                              // bytes req'd by 1 vboContents array element;
 																// (why? used to compute stride and offset 
