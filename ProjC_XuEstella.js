@@ -151,6 +151,17 @@ function main() {
     console.log('Failed to get the rendering context for WebGL');
     return;
   }
+
+  // KEYBOARD:
+  // The 'keyDown' and 'keyUp' events respond to ALL keys on the keyboard,
+  //      including shift,alt,ctrl,arrow, pgUp, pgDn,f1,f2...f12 etc. 
+	window.addEventListener("keydown", myKeyDown, false);
+	// After each 'keydown' event, call the 'myKeyDown()' function.  The 'false' 
+	// arg (default) ensures myKeyDown() call in 'bubbling', not 'capture' stage)
+	// ( https://www.w3schools.com/jsref/met_document_addeventlistener.asp )
+	window.addEventListener("keyup", myKeyUp, false);
+	// Called when user RELEASES the key.  Now rarely used...
+
   gl.clearColor(0.2, 0.2, 0.2, 1);	  // RGBA color for clearing <canvas>
 
   gl.enable(gl.DEPTH_TEST);
@@ -275,6 +286,7 @@ function drawAll() {
 
 var b4Draw = Date.now();
 var b4Wait = b4Draw - g_lastMS;
+setCamera();
 
 	if(g_show0 == 1) {	// IF user didn't press HTML button to 'hide' VBO0:
 	  worldBox.switchToMe();  // Set WebGL to render from this VBObox.
@@ -322,21 +334,146 @@ function VBO2toggle() {
   console.log('g_show2: '+g_show2);
 }
 
+var g_EyeX = 5, g_EyeY = 5, g_EyeZ = 3;
+var theta = 0, deltaZ = 0;
+// var vpAspect = g_canvasID.width/(4*g_canvasID.height/3)
+var vpAspect = 1;
 function setCamera() {
 //============================================================================
 // PLACEHOLDER:  sets a fixed camera at a fixed position for use by
 // ALL VBObox objects.  REPLACE This with your own camera-control code.
 
 	g_worldMat.setIdentity();
-	g_worldMat.perspective(42.0,   // FOVY: top-to-bottom vertical image angle, in degrees
-  										1.0,   // Image Aspect Ratio: camera lens width/height
+	g_worldMat.perspective(35,   // FOVY: top-to-bottom vertical image angle, in degrees
+  										vpAspect,   // Image Aspect Ratio: camera lens width/height
                       1.0,   // camera z-near distance (always positive; frustum begins at z = -znear)
-                      200.0);  // camera z-far distance (always positive; frustum ends at z = -zfar)
+                      200);  // camera z-far distance (always positive; frustum ends at z = -zfar)
 
-  g_worldMat.lookAt( 5.0, 5.0, 3.0,	// center of projection
-  								 0.0, 0.0, 0.0,	// look-at point 
+  g_worldMat.lookAt( g_EyeX, g_EyeY, g_EyeZ,	// center of projection
+  g_EyeX + Math.cos(theta), g_EyeY + Math.sin(theta), g_EyeZ + deltaZ,	// look-at point 
+                  //  0.0, 0.0, 0.0,
   								 0.0, 0.0, 1.0);	// View UP vector.
 	// READY to draw in the 'world' coordinate system.
 //------------END COPY
 
 }
+
+function myKeyDown(kev) {
+  //===============================================================================
+  // Called when user presses down ANY key on the keyboard;
+  //
+  // For a light, easy explanation of keyboard events in JavaScript,
+  // see:    http://www.kirupa.com/html5/keyboard_events_in_javascript.htm
+  // For a thorough explanation of a mess of JavaScript keyboard event handling,
+  // see:    http://javascript.info/tutorial/keyboard-events
+  //
+  // NOTE: Mozilla deprecated the 'keypress' event entirely, and in the
+  //        'keydown' event deprecated several read-only properties I used
+  //        previously, including kev.charCode, kev.keyCode. 
+  //        Revised 2/2019:  use kev.key and kev.code instead.
+  //
+  // Report EVERYTHING in console:
+    console.log(  "--kev.code:",    kev.code,   "\t\t--kev.key:",     kev.key, 
+                "\n--kev.ctrlKey:", kev.ctrlKey,  "\t--kev.shiftKey:",kev.shiftKey,
+                "\n--kev.altKey:",  kev.altKey,   "\t--kev.metaKey:", kev.metaKey);
+  
+  // and report EVERYTHING on webpage:
+    document.getElementById('KeyDownResult').innerHTML = ''; // clear old results
+    document.getElementById('KeyModResult' ).innerHTML = ''; 
+    // key details:
+    document.getElementById('KeyModResult' ).innerHTML = 
+          "   --kev.code:"+kev.code   +"      --kev.key:"+kev.key+
+      "<br>--kev.ctrlKey:"+kev.ctrlKey+" --kev.shiftKey:"+kev.shiftKey+
+      "<br>--kev.altKey:"+kev.altKey +"  --kev.metaKey:"+kev.metaKey;
+   
+    switch(kev.code) {
+    // 	case "KeyP":
+    // 		console.log("Pause/unPause!\n");                // print on console,
+    // 		document.getElementById('KeyDownResult').innerHTML =  
+    // 		'myKeyDown() found p/P key. Pause/unPause!';   // print on webpage
+    // 		if(g_isRun==true) {
+    // 		  g_isRun = false;  
+    // 		    // STOP animation
+    // 		  }
+    // 		else {
+    // 		  g_isRun = true;     // RESTART animation
+    // 		  tick();
+    // 		  }
+    // 		break;
+    // 	//------------------WASD navigation-----------------
+        
+      case "KeyW":
+        console.log("a/A key: Strafe LEFT!\n");
+        document.getElementById('KeyDownResult').innerHTML =  
+        'myKeyDown() found a/A key. Strafe LEFT!';
+        g_EyeX += 0.1 * Math.cos(theta); 
+        g_EyeY += 0.1 * Math.sin(theta);
+        g_EyeZ += 0.1 * deltaZ;
+        break;
+        case "KeyS":
+        console.log("a/A key: Strafe LEFT!\n");
+        document.getElementById('KeyDownResult').innerHTML =  
+        'myKeyDown() found a/A key. Strafe LEFT!';
+        g_EyeX -= 0.1 * Math.cos(theta); 
+        g_EyeY -= 0.1 * Math.sin(theta);
+        g_EyeZ -= 0.1 * deltaZ;
+        break;
+  
+      case "KeyA":
+        console.log("a/A key: Strafe LEFT!\n");
+        document.getElementById('KeyDownResult').innerHTML =  
+        'myKeyDown() found a/A key. Strafe LEFT!';
+        g_EyeX -= 0.1 * Math.sin(theta); 
+        g_EyeY += 0.1 * Math.cos(theta);
+        break;
+  
+      case "KeyD":
+        console.log("a/A key: Strafe LEFT!\n");
+        document.getElementById('KeyDownResult').innerHTML =  
+        'myKeyDown() found a/A key. Strafe LEFT!';
+        g_EyeX += 0.1 * Math.sin(theta); 
+        g_EyeY -= 0.1 * Math.cos(theta);
+        break;
+      
+    
+      case "ArrowUp":
+        console.log("d/D key: Strafe RIGHT!\n");
+        document.getElementById('KeyDownResult').innerHTML = 
+        'Up Arrow: tilt up';
+        deltaZ += .07;
+        break;	
+      case "ArrowDown":
+        console.log("s/S key: Move BACK!\n");
+        document.getElementById('KeyDownResult').innerHTML = 
+        'Down Arrow: tilt down';
+        deltaZ -= .07;
+        break;
+      
+      case "ArrowLeft": 	
+        console.log(' left-arrow.');
+        // and print on webpage in the <div> element with id='Result':
+          document.getElementById('KeyDownResult').innerHTML =
+          'myKeyDown(): Left Arrow='+kev.keyCode;
+          theta+=.05; 
+        break;
+      case "ArrowRight":
+        console.log('right-arrow.');
+          document.getElementById('KeyDownResult').innerHTML =
+          'myKeyDown():Right Arrow:keyCode='+kev.keyCode;
+          theta-=.05;
+          break;
+      
+      default:
+        console.log("UNUSED!");
+        document.getElementById('KeyDownResult').innerHTML =
+          'myKeyDown(): UNUSED!';
+        break;
+    }
+  }
+  
+function myKeyUp(kev) {
+  //===============================================================================
+  // Called when user releases ANY key on the keyboard; captures scancodes well
+  
+    console.log('myKeyUp()--keyCode='+kev.keyCode+' released.');
+  }
