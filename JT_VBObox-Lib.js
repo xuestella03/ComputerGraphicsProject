@@ -529,6 +529,8 @@ function VBObox1() {
  `precision highp float;				// req'd in OpenGL ES if we use 'float'
   //
   uniform mat4 u_ModelMatrix;
+  uniform mat4 u_MvpMatrix;
+  uniform mat4 u_NormalMatrix;
   attribute vec4 a_Pos1;
   attribute vec3 a_Colr1;
   attribute float a_PtSiz1; 
@@ -536,7 +538,7 @@ function VBObox1() {
   //
   void main() {
     gl_PointSize = a_PtSiz1;
-    gl_Position = u_ModelMatrix * a_Pos1;
+    gl_Position = u_MvpMatrix * a_Pos1;
   	 v_Colr1 = a_Colr1;
    }`;
 //========YOUR CHOICE OF 3 Fragment shader programs=======
@@ -640,6 +642,9 @@ function VBObox1() {
 	
 	            //---------------------- Uniform locations &values in our shaders
 	this.ModelMatrix = new Matrix4();	// Transforms CVV axes to model axes.
+  this.NormalMatrix = new Matrix4();
+  this.MvpMatrix = new Matrix4();
+
 	this.u_ModelMatrixLoc;						// GPU location for u_ModelMat uniform
 };
 
@@ -726,10 +731,22 @@ VBObox1.prototype.init = function() {
   }
   // c2) Find All Uniforms:-----------------------------------------------------
   //Get GPU storage location for each uniform var used in our shader programs: 
- this.u_ModelMatrixLoc = gl.getUniformLocation(this.shaderLoc, 'u_ModelMatrix');
+  this.u_NormalMatrixLoc = gl.getUniformLocation(this.shaderLoc, 'u_NormalMatrix');
+  this.u_MvpMatrixLoc = gl.getUniformLocation(this.shaderLoc, 'u_MvpMatrix');
+  this.u_ModelMatrixLoc = gl.getUniformLocation(this.shaderLoc, 'u_ModelMatrix');
   if (!this.u_ModelMatrixLoc) { 
     console.log(this.constructor.name + 
     						'.init() failed to get GPU location for u_ModelMatrix uniform');
+    return;
+  }
+  if (!this.u_NormalMatrixLoc) { 
+    console.log(this.constructor.name + 
+    						'.init() failed to get GPU location for u_NormalMatrix uniform');
+    return;
+  }
+  if (!this.u_MvpMatrixLoc) { 
+    console.log(this.constructor.name + 
+    						'.init() failed to get GPU location for u_MvpMatrix uniform');
     return;
   }
 }
@@ -826,16 +843,29 @@ VBObox1.prototype.adjust = function() {
   }
 	// Adjust values for our uniforms,
 	this.ModelMatrix.setIdentity();
+  this.ModelMatrix.translate(1.0, -2.0, 0);
+  this.NormalMatrix.setIdentity();
+  this.MvpMatrix.set(g_worldMat);
+  this.MvpMatrix.concat(this.ModelMatrix);
+  // this.MvpMatrix.setIdentity();
 // THIS DOESN'T WORK!!  this.ModelMatrix = g_worldMat;
-  this.ModelMatrix.set(g_worldMat);
+  // this.ModelMatrix.set(g_worldMat);
 
 //  this.ModelMatrix.rotate(g_angleNow1, 0, 0, 1);	// -spin drawing axes,
-  this.ModelMatrix.translate(1.0, -2.0, 0);						// then translate them.
+  // this.ModelMatrix.translate(1.0, -2.0, 0);						// then translate them.
   //  Transfer new uniforms' values to the GPU:-------------
   // Send  new 'ModelMat' values to the GPU's 'u_ModelMat1' uniform: 
   gl.uniformMatrix4fv(this.u_ModelMatrixLoc,	// GPU location of the uniform
   										false, 										// use matrix transpose instead?
   										this.ModelMatrix.elements);	// send data from Javascript.
+
+  gl.uniformMatrix4fv(this.u_NormalMatrixLoc,	// GPU location of the uniform
+  										false, 										// use matrix transpose instead?
+  										this.NormalMatrix.elements);	// send data from Javascript.
+
+  gl.uniformMatrix4fv(this.u_MvpMatrixLoc,	// GPU location of the uniform
+  										false, 										// use matrix transpose instead?
+  										this.MvpMatrix.elements);	// send data from Javascript.
 }
 
 VBObox1.prototype.draw = function() {
