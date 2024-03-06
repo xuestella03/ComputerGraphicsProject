@@ -1,5 +1,5 @@
 //3456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_
-// (JT: why the numbers? counts columns, helps me keep 80-char-wide listings)
+// (JT: why the numbers? counts columns, helps me keep 80-char-wide listings) 
 //
 // TABS set to 2.
 //
