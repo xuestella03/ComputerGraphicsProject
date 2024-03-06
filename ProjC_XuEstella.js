@@ -348,7 +348,7 @@ function setCamera() {
   var vpAspect = g_canvasID.width/(4*g_canvasID.height/3);
 	g_worldMat.setIdentity();
 	g_worldMat.perspective(35,   // FOVY: top-to-bottom vertical image angle, in degrees
-                      vpAspect,   // Image Aspect Ratio: camera lens width/height
+                      1,   // Image Aspect Ratio: camera lens width/height
                       1.0,   // camera z-near distance (always positive; frustum begins at z = -znear)
                       200);  // camera z-far distance (always positive; frustum ends at z = -zfar)
 
