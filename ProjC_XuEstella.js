@@ -336,16 +336,19 @@ function VBO2toggle() {
 
 var g_EyeX = 5, g_EyeY = 5, g_EyeZ = 3;
 var theta = 0, deltaZ = 0;
-// var vpAspect = g_canvasID.width/(4*g_canvasID.height/3)
-var vpAspect = 1;
+// var vpAspect = g_canvasID.width/(4*g_canvasID.height/3);
+// var vpAspect = 1;
 function setCamera() {
 //============================================================================
 // PLACEHOLDER:  sets a fixed camera at a fixed position for use by
 // ALL VBObox objects.  REPLACE This with your own camera-control code.
+  // console.log('g_canvasID width,height=', g_canvasID.width, g_canvasID.height);
+  // console.log('what should be vpAspect', g_canvasID.width/(4*g_canvasID.height/3));
 
+  var vpAspect = g_canvasID.width/(4*g_canvasID.height/3);
 	g_worldMat.setIdentity();
 	g_worldMat.perspective(35,   // FOVY: top-to-bottom vertical image angle, in degrees
-  										vpAspect,   // Image Aspect Ratio: camera lens width/height
+                      vpAspect,   // Image Aspect Ratio: camera lens width/height
                       1.0,   // camera z-near distance (always positive; frustum begins at z = -znear)
                       200);  // camera z-far distance (always positive; frustum ends at z = -zfar)
 
@@ -477,3 +480,24 @@ function myKeyUp(kev) {
   
     console.log('myKeyUp()--keyCode='+kev.keyCode+' released.');
   }
+
+function drawResize() {
+    //==============================================================================
+    // Called when user re-sizes their browser window , because our HTML file
+    // contains:  <body onload="main()" onresize="winResize()">
+    
+      //Report our current browser-window contents:
+    
+      console.log('g_Canvas width,height=', g_canvasID.width, g_canvasID.height);		
+     console.log('Browser window: innerWidth,innerHeight=', 
+                                    innerWidth, innerHeight);	
+                                    // http://www.w3schools.com/jsref/obj_window.asp
+    
+      
+      //Make canvas fill the top 3/4 of our browser window:
+      var xtraMargin = 16;    // keep a margin (otherwise, browser adds scroll-bars)
+      g_canvasID.width = innerWidth - xtraMargin;
+      g_canvasID.height = (innerHeight*3/4) - xtraMargin;
+      // IMPORTANT!  Need a fresh drawing in the re-sized viewports.
+      // draw();				// draw in all viewports.
+    }
