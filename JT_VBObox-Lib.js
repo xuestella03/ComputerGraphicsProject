@@ -532,21 +532,21 @@ function VBObox1() {
   uniform mat4 u_MvpMatrix;
   uniform mat4 u_NormalMatrix;
   attribute vec4 a_Pos1;
-  attribute vec3 a_Colr1;
-  varying vec3 v_Colr1;
+  attribute vec3 a_Norm;
+  varying vec3 v_Norm1;
   //
   void main() {
     gl_Position = u_MvpMatrix * a_Pos1;
-  	 v_Colr1 = a_Colr1;
+  	 v_Norm1 = a_Norm;
    }`;
 
 // /*
  // c) SHADED, sphere-like dots:
 	this.FRAG_SRC = //---------------------- FRAGMENT SHADER source code 
  `precision mediump float;
-  varying vec3 v_Colr1;
+  varying vec3 v_Norm1;
   void main() {
-     	gl_FragColor = vec4(v_Colr1.rgb,1);
+     	gl_FragColor = vec4(v_Norm1.z, v_Norm1.z, v_Norm1.z ,1);
 
   }`;
 //*/
@@ -1534,22 +1534,22 @@ function VBObox1() {
 	            //----------------------Attribute sizes
   this.vboFcount_a_Pos1 =  4;    // # of floats in the VBO needed to store the
                                 // attribute named a_Pos1. (4: x,y,z,w values)
-  this.vboFcount_a_Colr1 = 3;   // # of floats for this attrib (r,g,b values)
+  this.vboFcount_a_Norm = 3;   // # of floats for this attrib (r,g,b values)
   
   console.assert((this.vboFcount_a_Pos1 +     // check the size of each and
-                  this.vboFcount_a_Colr1) *   // every attribute in our VBO
+                  this.vboFcount_a_Norm) *   // every attribute in our VBO
                   this.FSIZE == this.vboStride, // for agreeement with'stride'
                   "Uh oh! VBObox1.vboStride disagrees with attribute-size values!");
                   
               //----------------------Attribute offsets
 	this.vboOffset_a_Pos1 = 0;    //# of bytes from START of vbo to the START
 	                              // of 1st a_Pos1 attrib value in vboContents[]
-  this.vboOffset_a_Colr1 = (this.vboFcount_a_Pos1) * this.FSIZE;  
+  this.vboOffset_a_Norm = (this.vboFcount_a_Pos1) * this.FSIZE;  
                                 // == 4 floats * bytes/float
                                 //# of bytes from START of vbo to the START
-                                // of 1st a_Colr1 attrib value in vboContents[]
+                                // of 1st a_Norm attrib value in vboContents[]
   // this.vboOffset_a_PtSiz1 =(this.vboFcount_a_Pos1 +
-  //                           this.vboFcount_a_Colr1) * this.FSIZE; 
+  //                           this.vboFcount_a_Norm) * this.FSIZE; 
                                 // == 7 floats * bytes/float
                                 // # of bytes from START of vbo to the START
                                 // of 1st a_PtSize attrib value in vboContents[]
@@ -1561,7 +1561,7 @@ function VBObox1() {
 	                            	// set by compile/link of VERT_SRC and FRAG_SRC.
 								          //------Attribute locations in our shaders:
 	this.a_Pos1Loc;							  // GPU location: shader 'a_Pos1' attribute
-	this.a_Colr1Loc;							// GPU location: shader 'a_Colr1' attribute
+	this.a_NormLoc;							// GPU location: shader 'a_Norm' attribute
 	// this.a_PtSiz1Loc;							// GPU location: shader 'a_PtSiz1' attribute
 	
 	            //---------------------- Uniform locations &values in our shaders
@@ -1641,10 +1641,10 @@ VBObox1.prototype.init = function() {
     						'.init() Failed to get GPU location of attribute a_Pos1');
     return -1;	// error exit.
   }
- 	this.a_Colr1Loc = gl.getAttribLocation(this.shaderLoc, 'a_Colr1');
-  if(this.a_Colr1Loc < 0) {
+ 	this.a_NormLoc = gl.getAttribLocation(this.shaderLoc, 'a_Norm');
+  if(this.a_NormLoc < 0) {
     console.log(this.constructor.name + 
-    						'.init() failed to get the GPU location of attribute a_Colr1');
+    						'.init() failed to get the GPU location of attribute a_Norm');
     return -1;	// error exit.
   }
   // this.a_PtSiz1Loc = gl.getAttribLocation(this.shaderLoc, 'a_PtSiz1');
@@ -1722,15 +1722,15 @@ VBObox1.prototype.switchToMe = function () {
 		this.vboOffset_a_Pos1);						
 		              // Offset == how many bytes from START of buffer to the first
   								// value we will actually use?  (we start with position).
-  gl.vertexAttribPointer(this.a_Colr1Loc, this.vboFcount_a_Colr1,
+  gl.vertexAttribPointer(this.a_NormLoc, this.vboFcount_a_Norm,
                          gl.FLOAT, false, 
-  						           this.vboStride,  this.vboOffset_a_Colr1);
+  						           this.vboStride,  this.vboOffset_a_Norm);
   // gl.vertexAttribPointer(this.a_PtSiz1Loc,this.vboFcount_a_PtSiz1, 
   //                        gl.FLOAT, false, 
 	// 						           this.vboStride,	this.vboOffset_a_PtSiz1);	
   //-- Enable this assignment of the attribute to its' VBO source:
   gl.enableVertexAttribArray(this.a_Pos1Loc);
-  gl.enableVertexAttribArray(this.a_Colr1Loc);
+  gl.enableVertexAttribArray(this.a_NormLoc);
   // gl.enableVertexAttribArray(this.a_PtSiz1Loc);
 }
 
