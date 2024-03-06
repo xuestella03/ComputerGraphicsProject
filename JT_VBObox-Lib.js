@@ -533,63 +533,30 @@ function VBObox1() {
   uniform mat4 u_NormalMatrix;
   attribute vec4 a_Pos1;
   attribute vec3 a_Colr1;
-  attribute float a_PtSiz1; 
   varying vec3 v_Colr1;
   //
   void main() {
-    gl_PointSize = a_PtSiz1;
     gl_Position = u_MvpMatrix * a_Pos1;
   	 v_Colr1 = a_Colr1;
    }`;
-//========YOUR CHOICE OF 3 Fragment shader programs=======
-//				(use /* and */ to uncomment ONLY ONE)
-// Each is an example of how to use the built-in vars for gl.POINTS to
-// improve their on-screen appearance.
-// a)'SQUARE points' -- DEFAULT; simple fixed-color square set by point-size.
-// b) 'ROUND FLAT' -- uses 'gl_PointCoord' to make solid-color dot instead;
-// c) 'SHADED Sphere' -- radial distance sets color to 'fake' a lit 3D sphere.
-//   You too can be a 'shader writer'! What other fragment shaders would help?
-/*
- // a) SQUARE points:
-	this.FRAG_SRC = //---------------------- FRAGMENT SHADER source code 
- `precision mediump float;
-  varying vec3 v_Colr1;
-  void main() {
-    gl_FragColor = vec4(v_Colr1, 1.0);
-  }`;
 
-*/
-/*
- // b) ROUND FLAT dots:
-	this.FRAG_SRC = //---------------------- FRAGMENT SHADER source code 
- `precision mediump float;
-  varying vec3 v_Colr1;
-  void main() {
-    float dist = distance(gl_PointCoord, vec2(0.5, 0.5)); 
-    if(dist < 0.5) {
-      gl_FragColor = vec4(v_Colr1, 1.0);
-      } else {discard;};
-  }`;
-*/
 // /*
  // c) SHADED, sphere-like dots:
 	this.FRAG_SRC = //---------------------- FRAGMENT SHADER source code 
  `precision mediump float;
   varying vec3 v_Colr1;
   void main() {
-    float dist = distance(gl_PointCoord, vec2(0.5, 0.5));
-    if(dist < 0.5) {
- 	  	gl_FragColor = vec4((1.0-2.0*dist)*v_Colr1.rgb, 1.0);
-      } else {discard;};
+     	gl_FragColor = vec4(v_Colr1.rgb,1);
+
   }`;
 //*/
 	this.vboContents = //---------------------------------------------------------
 		new Float32Array ([					// Array of vertex attribute values we will
   															// transfer to GPU's vertex buffer object (VBO)
 			// 1 vertex per line: pos1 x,y,z,w;   colr1; r,g,b;   ptSiz1; 
-  	-0.3,  0.7,	0.0, 1.0,		0.0, 1.0, 1.0,  17.0,
-    -0.3, -0.3, 0.0, 1.0,		1.0, 0.0, 1.0,  20.0,
-     0.3, -0.3, 0.0, 1.0,		1.0, 1.0, 0.0,  33.0,
+  	1,  -1,	0.0, 1.0,		0.0, 1.0, 1.0,  17.0,
+    0, 1, 0.0, 1.0,		1.0, 0.0, 1.0,  20.0,
+     -1, -1, 0.0, 1.0,		1.0, 1.0, 0.0,  33.0,
   ]);	
   
 	this.vboVerts = 3;							// # of vertices held in 'vboContents' array;
@@ -624,8 +591,8 @@ function VBObox1() {
                                 // == 4 floats * bytes/float
                                 //# of bytes from START of vbo to the START
                                 // of 1st a_Colr1 attrib value in vboContents[]
-  this.vboOffset_a_PtSiz1 =(this.vboFcount_a_Pos1 +
-                            this.vboFcount_a_Colr1) * this.FSIZE; 
+  // this.vboOffset_a_PtSiz1 =(this.vboFcount_a_Pos1 +
+  //                           this.vboFcount_a_Colr1) * this.FSIZE; 
                                 // == 7 floats * bytes/float
                                 // # of bytes from START of vbo to the START
                                 // of 1st a_PtSize attrib value in vboContents[]
@@ -638,7 +605,7 @@ function VBObox1() {
 								          //------Attribute locations in our shaders:
 	this.a_Pos1Loc;							  // GPU location: shader 'a_Pos1' attribute
 	this.a_Colr1Loc;							// GPU location: shader 'a_Colr1' attribute
-	this.a_PtSiz1Loc;							// GPU location: shader 'a_PtSiz1' attribute
+	// this.a_PtSiz1Loc;							// GPU location: shader 'a_PtSiz1' attribute
 	
 	            //---------------------- Uniform locations &values in our shaders
 	this.ModelMatrix = new Matrix4();	// Transforms CVV axes to model axes.
@@ -723,12 +690,12 @@ VBObox1.prototype.init = function() {
     						'.init() failed to get the GPU location of attribute a_Colr1');
     return -1;	// error exit.
   }
-  this.a_PtSiz1Loc = gl.getAttribLocation(this.shaderLoc, 'a_PtSiz1');
-  if(this.a_PtSiz1Loc < 0) {
-    console.log(this.constructor.name + 
-	    					'.init() failed to get the GPU location of attribute a_PtSiz1');
-	  return -1;	// error exit.
-  }
+  // this.a_PtSiz1Loc = gl.getAttribLocation(this.shaderLoc, 'a_PtSiz1');
+  // if(this.a_PtSiz1Loc < 0) {
+  //   console.log(this.constructor.name + 
+	//     					'.init() failed to get the GPU location of attribute a_PtSiz1');
+	//   return -1;	// error exit.
+  // }
   // c2) Find All Uniforms:-----------------------------------------------------
   //Get GPU storage location for each uniform var used in our shader programs: 
   this.u_NormalMatrixLoc = gl.getUniformLocation(this.shaderLoc, 'u_NormalMatrix');
@@ -801,13 +768,13 @@ VBObox1.prototype.switchToMe = function () {
   gl.vertexAttribPointer(this.a_Colr1Loc, this.vboFcount_a_Colr1,
                          gl.FLOAT, false, 
   						           this.vboStride,  this.vboOffset_a_Colr1);
-  gl.vertexAttribPointer(this.a_PtSiz1Loc,this.vboFcount_a_PtSiz1, 
-                         gl.FLOAT, false, 
-							           this.vboStride,	this.vboOffset_a_PtSiz1);	
+  // gl.vertexAttribPointer(this.a_PtSiz1Loc,this.vboFcount_a_PtSiz1, 
+  //                        gl.FLOAT, false, 
+	// 						           this.vboStride,	this.vboOffset_a_PtSiz1);	
   //-- Enable this assignment of the attribute to its' VBO source:
   gl.enableVertexAttribArray(this.a_Pos1Loc);
   gl.enableVertexAttribArray(this.a_Colr1Loc);
-  gl.enableVertexAttribArray(this.a_PtSiz1Loc);
+  // gl.enableVertexAttribArray(this.a_PtSiz1Loc);
 }
 
 VBObox1.prototype.isReady = function() {
@@ -843,7 +810,7 @@ VBObox1.prototype.adjust = function() {
   }
 	// Adjust values for our uniforms,
 	this.ModelMatrix.setIdentity();
-  this.ModelMatrix.translate(1.0, -2.0, 0);
+  // this.ModelMatrix.translate(1.0, -2.0, 0);
   this.NormalMatrix.setIdentity();
   this.MvpMatrix.set(g_worldMat);
   this.MvpMatrix.concat(this.ModelMatrix);
@@ -879,7 +846,7 @@ VBObox1.prototype.draw = function() {
   }
   
   // ----------------------------Draw the contents of the currently-bound VBO:
-  gl.drawArrays(gl.POINTS,		    // select the drawing primitive to draw:
+  gl.drawArrays(gl.TRIANGLES,		    // select the drawing primitive to draw:
                   // choices: gl.POINTS, gl.LINES, gl.LINE_STRIP, gl.LINE_LOOP, 
                   //          gl.TRIANGLES, gl.TRIANGLE_STRIP,
   							0, 								// location of 1st vertex to draw;
