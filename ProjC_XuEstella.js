@@ -346,11 +346,11 @@ function setCamera() {
 // ALL VBObox objects.  REPLACE This with your own camera-control code.
   // console.log('g_canvasID width,height=', g_canvasID.width, g_canvasID.height);
   // console.log('what should be vpAspect', g_canvasID.width/(4*g_canvasID.height/3));
-
-  var vpAspect = g_canvasID.width/(4*g_canvasID.height/3);
+  gl.viewport(0,0,g_canvasID.width, 3*g_canvasID.height/4);
+  var vpAspect = g_canvasID.width/(3*g_canvasID.height/4);
 	g_worldMat.setIdentity();
-	g_worldMat.perspective(35,   // FOVY: top-to-bottom vertical image angle, in degrees
-                      1,   // Image Aspect Ratio: camera lens width/height
+	g_worldMat.perspective(40,   // FOVY: top-to-bottom vertical image angle, in degrees
+                      vpAspect,   // Image Aspect Ratio: camera lens width/height
                       1.0,   // camera z-near distance (always positive; frustum begins at z = -znear)
                       200);  // camera z-far distance (always positive; frustum ends at z = -zfar)
 
@@ -514,7 +514,7 @@ function drawResize() {
       //Make canvas fill the top 3/4 of our browser window:
       var xtraMargin = 16;    // keep a margin (otherwise, browser adds scroll-bars)
       g_canvasID.width = innerWidth - xtraMargin;
-      g_canvasID.height = (innerHeight*3/4) - xtraMargin;
+      g_canvasID.height = (3*innerHeight/4) - xtraMargin;
       // IMPORTANT!  Need a fresh drawing in the re-sized viewports.
-      // draw();				// draw in all viewports.
+      draw();				// draw in all viewports.
     }
