@@ -542,10 +542,10 @@ function VBObox1() {
   //
   void main() {
     gl_Position = u_MvpMatrix * a_Pos1;
-    v_Position = u_ModelMatrix * a_Pos1; // new
-  	// v_Norm1 = a_Norm; // old, comment out
-    v_Norm1 = normalize(vec3(u_NormalMatrix * vec4(a_Norm, 0.0))); // new
-    v_Kd = u_Kd; // new
+    // v_Position = u_ModelMatrix * a_Pos1; // new
+  	v_Norm1 = a_Norm; // old, comment out
+    // v_Norm1 = normalize(vec3(u_NormalMatrix * vec4(a_Norm, 0.0))); // new
+    // v_Kd = u_Kd; // new
    }`;
 
 // /*
@@ -1641,16 +1641,16 @@ function VBObox1() {
 	this.ModelMatrix = new Matrix4();	// Transforms CVV axes to model axes.
   this.NormalMatrix = new Matrix4();
   this.MvpMatrix = new Matrix4();
-  this.u_eyePosWorld = new Vector4();
-  this.u_Lamp0Pos = new Vector4();
-  this.u_Lamp0Diff = new Vector3();
-  this.u_Lamp0Amb = new Vector3();
-  this.u_Lamp0Spec = new Vector3();
+  // this.u_eyePosWorld = new Vector4();
+  // this.u_Lamp0Pos = new Vector4();
+  // this.u_Lamp0Diff = new Vector3();
+  // this.u_Lamp0Amb = new Vector3();
+  // this.u_Lamp0Spec = new Vector3();
 
-  this.u_Ke = new Vector3();
-  this.u_Ka = new Vector3();
-  this.v_Kd = new Vector3();
-  this.u_Ks = new Vector3();
+  // this.u_Ke = new Vector3();
+  // this.u_Ka = new Vector3();
+  // this.v_Kd = new Vector3();
+  // this.u_Ks = new Vector3();
 
 
 	this.u_ModelMatrixLoc;						// GPU location for u_ModelMat uniform
@@ -1760,7 +1760,7 @@ VBObox1.prototype.init = function() {
     						'.init() failed to get GPU location for u_MvpMatrix uniform');
     return;
   }
-
+/*
   var u_Lamp0Pos  = gl.getUniformLocation(gl.program, 	'u_Lamp0Pos');
   var u_Lamp0Amb  = gl.getUniformLocation(gl.program, 	'u_Lamp0Amb');
   var u_Lamp0Diff = gl.getUniformLocation(gl.program, 	'u_Lamp0Diff');
@@ -1783,7 +1783,7 @@ VBObox1.prototype.init = function() {
 		 ) {
 		console.log('Failed to get the Phong Reflectance storage locations');
 		return;
-	}
+	}*/
 }
 
 VBObox1.prototype.switchToMe = function () {
@@ -1880,11 +1880,11 @@ VBObox1.prototype.adjust = function() {
 	this.ModelMatrix.setIdentity();
   // this.ModelMatrix.translate(1.0, -2.0, 0);
   this.NormalMatrix.setIdentity();
-  this.NormalMatrix.setInverseOf(this.ModelMatrix);
-  this.NormalMatrix.transpose();
+  // this.NormalMatrix.setInverseOf(this.ModelMatrix);
+  // this.NormalMatrix.transpose();
   this.MvpMatrix.set(g_worldMat);
   this.MvpMatrix.concat(this.ModelMatrix);
-  console.log('matrices set' + this.NormalMatrix);
+  
   // this.MvpMatrix.setIdentity();
 // THIS DOESN'T WORK!!  this.ModelMatrix = g_worldMat;
   // this.ModelMatrix.set(g_worldMat);
