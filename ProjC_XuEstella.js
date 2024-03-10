@@ -216,8 +216,10 @@ setCamera();				// TEMPORARY: set a global camera used by ALL VBObox objects...
   //------------------------------------
   var tick = function() {		    // locally (within main() only), define our 
                                 // self-calling animation function. 
+                                // animate();
     requestAnimationFrame(tick, g_canvasID); // browser callback request; wait
                                 // til browser is ready to re-draw canvas, then
+    // animate();
     timerAll();  // Update all time-varying params, and
     drawAll();                // Draw all the VBObox contents
     };
@@ -360,6 +362,21 @@ function setCamera() {
 //------------END COPY
 
 }
+
+var g_last = Date.now()
+function animate() {
+  //==============================================================================
+    // Calculate the elapsed time
+    var now = Date.now();
+    var elapsed = now - g_last;
+    g_last = now;
+    
+    // Update the current rotation angle (adjusted by the elapsed time)
+    var newAngle = angle + (ANGLE_STEP * elapsed) / 1000.0;
+    if(newAngle > 180.0) newAngle = newAngle - 360.0;
+    if(newAngle <-180.0) newAngle = newAngle + 360.0;
+    return newAngle;
+  }
 
 function myKeyDown(kev) {
   //===============================================================================

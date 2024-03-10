@@ -528,28 +528,101 @@ function VBObox1() {
 	this.VERT_SRC =	//--------------------- VERTEX SHADER source code 
  `precision highp float;				// req'd in OpenGL ES if we use 'float'
   //
+  uniform vec3 u_Kd;
   uniform mat4 u_ModelMatrix;
   uniform mat4 u_MvpMatrix;
   uniform mat4 u_NormalMatrix;
+
   attribute vec4 a_Pos1;
   attribute vec3 a_Norm;
+
+  varying vec3 v_Kd;
+  varying vec4 v_Position;
   varying vec3 v_Norm1;
   //
   void main() {
     gl_Position = u_MvpMatrix * a_Pos1;
-  	 v_Norm1 = a_Norm;
+    v_Position = u_ModelMatrix * a_Pos1; // new
+  	// v_Norm1 = a_Norm; // old, comment out
+    v_Norm1 = normalize(vec3(u_NormalMatrix * vec4(a_Norm, 0.0))); // new
+    v_Kd = u_Kd; // new
    }`;
 
 // /*
  // c) SHADED, sphere-like dots:
 	this.FRAG_SRC = //---------------------- FRAGMENT SHADER source code 
- `precision mediump float;
+//   `#ifdef GL_ES
+//   precision mediump float;
+//   #endif
+  
+//   // first light source: (YOU write a second one...)
+//   uniform vec4 u_Lamp0Pos; 			// Phong Illum: position
+//   uniform vec3 u_Lamp0Amb;   		// Phong Illum: ambient
+//   uniform vec3 u_Lamp0Diff;     // Phong Illum: diffuse
+// 	uniform vec3 u_Lamp0Spec;			// Phong Illum: specular
+	
+// 	// first material definition: you write 2nd, 3rd, etc.
+//   uniform vec3 u_Ke;						// Phong Reflectance: emissive
+//   uniform vec3 u_Ka;						// Phong Reflectance: ambient
+// 	// Phong Reflectance: diffuse? -- use v_Kd instead for per-pixel value
+//   uniform vec3 u_Ks;						// Phong Reflectance: specular
+// //  uniform int u_Kshiny;				// Phong Reflectance: 1 < shiny < 200
+// //	
+//   uniform vec4 u_eyePosWorld;  	// Camera/eye location in world coords.
+  
+//   varying vec3 v_Norm1;				// Find 3D surface normal at each pix
+//   varying vec4 v_Position;			// pixel's 3D pos too -- in 'world' coords
+//   varying vec3 v_Kd;						// Find diffuse reflectance K_d per pix
+//     												// Ambient? Emissive? Specular? almost
+//   													// NEVER change per-vertex: I use'uniform'
+
+//   void main() { 
+//      	// Normalize! !!IMPORTANT!! TROUBLE if you don't! 
+//      	// normals interpolated for each pixel aren't 1.0 in length any more!
+// 	  vec3 normal = normalize(v_Norm1); 
+// //	  vec3 normal = v_Normal; 
+//      	// Calculate the light direction vector, make it unit-length (1.0).
+// 	  vec3 lightDirection = normalize(u_Lamp0Pos.xyz - v_Position.xyz);
+//      	// The dot product of the light direction and the normal
+//      	// (use max() to discard any negatives from lights below the surface)
+//      	// (look in GLSL manual: what other functions would help?)
+// 	  float nDotL = max(dot(lightDirection, normal), 0.0); 
+//   	 	// The Blinn-Phong lighting model computes the specular term faster 
+//   	 	// because it replaces the (V*R)^shiny weighting with (H*N)^shiny,
+//   	 	// where 'halfway' vector H has a direction half-way between L and V"
+//   	 	// H = norm(norm(V) + norm(L)) 
+//   	 	// (see http://en.wikipedia.org/wiki/Blinn-Phong_shading_model)
+//     vec3 eyeDirection = normalize(u_eyePosWorld.xyz - v_Position.xyz); 
+// 	  vec3 H = normalize(lightDirection + eyeDirection); 
+// 	  float nDotH = max(dot(H, normal), 0.0); 
+// 			// (use max() to discard any negatives from lights below the surface)
+// 			// Apply the 'shininess' exponent K_e:
+// 	  float e02 = nDotH*nDotH; 
+// 	  float e04 = e02*e02; 
+// 	  float e08 = e04*e04; 
+// 		float e16 = e08*e08; 
+// 		float e32 = e16*e16;  
+// 		float e64 = e32*e32;
+// // Can you find a better way to do this? SEE GLSL 'pow()'.
+//      	// Calculate the final color from diffuse reflection and ambient reflection
+// 		vec3 emissive = u_Ke;
+//     vec3 ambient = u_Lamp0Amb * u_Ka;
+//     vec3 diffuse = u_Lamp0Diff * v_Kd * nDotL;
+//   	vec3 speculr = u_Lamp0Spec * u_Ks * e64;
+//     gl_FragColor = vec4(emissive + ambient + diffuse + speculr , 1.0);
+// //    gl_FragColor = vec4(emissive, 1.0);
+// //    gl_FragColor = vec4(emissive + ambient, 1.0);
+// //		gl_FragColor = vec4(emissive + ambient + diffuse, 1.0);
+// //    gl_FragColor = vec4(ambient + speculr , 1.0);
+//   }`;
+
+   `precision mediump float;
   varying vec3 v_Norm1;
   void main() {
      	gl_FragColor = vec4(v_Norm1.z, v_Norm1.z, v_Norm1.z ,1);
 
   }`;
-//*/
+// */
 	this.vboContents = //---------------------------------------------------------
 		new Float32Array ([					// Array of vertex attribute values we will
   															// transfer to GPU's vertex buffer object (VBO)
@@ -1568,6 +1641,17 @@ function VBObox1() {
 	this.ModelMatrix = new Matrix4();	// Transforms CVV axes to model axes.
   this.NormalMatrix = new Matrix4();
   this.MvpMatrix = new Matrix4();
+  this.u_eyePosWorld = new Vector4();
+  this.u_Lamp0Pos = new Vector4();
+  this.u_Lamp0Diff = new Vector3();
+  this.u_Lamp0Amb = new Vector3();
+  this.u_Lamp0Spec = new Vector3();
+
+  this.u_Ke = new Vector3();
+  this.u_Ka = new Vector3();
+  this.v_Kd = new Vector3();
+  this.u_Ks = new Vector3();
+
 
 	this.u_ModelMatrixLoc;						// GPU location for u_ModelMat uniform
 };
@@ -1658,6 +1742,9 @@ VBObox1.prototype.init = function() {
   this.u_NormalMatrixLoc = gl.getUniformLocation(this.shaderLoc, 'u_NormalMatrix');
   this.u_MvpMatrixLoc = gl.getUniformLocation(this.shaderLoc, 'u_MvpMatrix');
   this.u_ModelMatrixLoc = gl.getUniformLocation(this.shaderLoc, 'u_ModelMatrix');
+  // var u_eyePosWorld = gl.getUniformLocation(gl.program, 'u_eyePosWorld');
+
+
   if (!this.u_ModelMatrixLoc) { 
     console.log(this.constructor.name + 
     						'.init() failed to get GPU location for u_ModelMatrix uniform');
@@ -1673,6 +1760,30 @@ VBObox1.prototype.init = function() {
     						'.init() failed to get GPU location for u_MvpMatrix uniform');
     return;
   }
+
+  var u_Lamp0Pos  = gl.getUniformLocation(gl.program, 	'u_Lamp0Pos');
+  var u_Lamp0Amb  = gl.getUniformLocation(gl.program, 	'u_Lamp0Amb');
+  var u_Lamp0Diff = gl.getUniformLocation(gl.program, 	'u_Lamp0Diff');
+  var u_Lamp0Spec	= gl.getUniformLocation(gl.program,		'u_Lamp0Spec');
+  console.log('lamps in');
+  if( !u_Lamp0Pos || !u_Lamp0Amb	) {//|| !u_Lamp0Diff	) { // || !u_Lamp0Spec	) {
+    console.log('Failed to get the Lamp0 storage locations');
+    return;
+  }
+
+  // ... for Phong material/reflectance:
+	var u_Ke = gl.getUniformLocation(gl.program, 'u_Ke');
+	var u_Ka = gl.getUniformLocation(gl.program, 'u_Ka');
+	// var v_Kd = gl.getUniformLocation(gl.program, 'v_Kd');
+	var u_Ks = gl.getUniformLocation(gl.program, 'u_Ks');
+//	var u_Kshiny = gl.getUniformLocation(gl.program, 'u_Kshiny');
+	
+	if(!u_Ke || !u_Ka// || !v_Kd 
+//		 || !u_Ks || !u_Kshiny
+		 ) {
+		console.log('Failed to get the Phong Reflectance storage locations');
+		return;
+	}
 }
 
 VBObox1.prototype.switchToMe = function () {
@@ -1769,8 +1880,11 @@ VBObox1.prototype.adjust = function() {
 	this.ModelMatrix.setIdentity();
   // this.ModelMatrix.translate(1.0, -2.0, 0);
   this.NormalMatrix.setIdentity();
+  this.NormalMatrix.setInverseOf(this.ModelMatrix);
+  this.NormalMatrix.transpose();
   this.MvpMatrix.set(g_worldMat);
   this.MvpMatrix.concat(this.ModelMatrix);
+  console.log('matrices set' + this.NormalMatrix);
   // this.MvpMatrix.setIdentity();
 // THIS DOESN'T WORK!!  this.ModelMatrix = g_worldMat;
   // this.ModelMatrix.set(g_worldMat);
@@ -1779,6 +1893,8 @@ VBObox1.prototype.adjust = function() {
   // this.ModelMatrix.translate(1.0, -2.0, 0);						// then translate them.
   //  Transfer new uniforms' values to the GPU:-------------
   // Send  new 'ModelMat' values to the GPU's 'u_ModelMat1' uniform: 
+  // gl.uniform4f(this.u_eyePosWorld, 6,0,0,1);
+  
   gl.uniformMatrix4fv(this.u_ModelMatrixLoc,	// GPU location of the uniform
   										false, 										// use matrix transpose instead?
   										this.ModelMatrix.elements);	// send data from Javascript.
@@ -1801,7 +1917,7 @@ VBObox1.prototype.draw = function() {
         console.log('ERROR! before' + this.constructor.name + 
   						'.draw() call you needed to call this.switchToMe()!!');
   }
-  
+  // this.ModelMatrix.rotate(g_angleNow0, 0, 1, 0);
   // ----------------------------Draw the contents of the currently-bound VBO:
   gl.drawArrays(gl.TRIANGLES,		    // select the drawing primitive to draw:
                   // choices: gl.POINTS, gl.LINES, gl.LINE_STRIP, gl.LINE_LOOP, 
