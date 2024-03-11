@@ -524,6 +524,9 @@ function VBObox1() {
 // written into code) in all other VBObox functions. Keeping all these (initial)
 // values here, in this one coonstrutor function, ensures we can change them 
 // easily WITHOUT disrupting any other code, ever!
+//=============================================================================
+// GOURAUD SHADING
+//=============================================================================
   
 	this.VERT_SRC =	//--------------------- VERTEX SHADER source code 
  `precision highp float;				// req'd in OpenGL ES if we use 'float'
@@ -551,70 +554,73 @@ function VBObox1() {
 // /*
  // c) SHADED, sphere-like dots:
 	this.FRAG_SRC = //---------------------- FRAGMENT SHADER source code 
-//   `#ifdef GL_ES
-//   precision mediump float;
-//   #endif
   
-//   // first light source: (YOU write a second one...)
-//   uniform vec4 u_Lamp0Pos; 			// Phong Illum: position
-//   uniform vec3 u_Lamp0Amb;   		// Phong Illum: ambient
-//   uniform vec3 u_Lamp0Diff;     // Phong Illum: diffuse
-// 	uniform vec3 u_Lamp0Spec;			// Phong Illum: specular
+  /*
+  `#ifdef GL_ES
+  precision mediump float;
+  #endif
+  
+  // first light source: (YOU write a second one...)
+  uniform vec4 u_Lamp0Pos; 			// Phong Illum: position
+  uniform vec3 u_Lamp0Amb;   		// Phong Illum: ambient
+  uniform vec3 u_Lamp0Diff;     // Phong Illum: diffuse
+	uniform vec3 u_Lamp0Spec;			// Phong Illum: specular
 	
-// 	// first material definition: you write 2nd, 3rd, etc.
-//   uniform vec3 u_Ke;						// Phong Reflectance: emissive
-//   uniform vec3 u_Ka;						// Phong Reflectance: ambient
-// 	// Phong Reflectance: diffuse? -- use v_Kd instead for per-pixel value
-//   uniform vec3 u_Ks;						// Phong Reflectance: specular
-// //  uniform int u_Kshiny;				// Phong Reflectance: 1 < shiny < 200
-// //	
-//   uniform vec4 u_eyePosWorld;  	// Camera/eye location in world coords.
+	// first material definition: you write 2nd, 3rd, etc.
+  uniform vec3 u_Ke;						// Phong Reflectance: emissive
+  uniform vec3 u_Ka;						// Phong Reflectance: ambient
+	// Phong Reflectance: diffuse? -- use v_Kd instead for per-pixel value
+  uniform vec3 u_Ks;						// Phong Reflectance: specular
+  //  uniform int u_Kshiny;				// Phong Reflectance: 1 < shiny < 200
+  //	
+  uniform vec4 u_eyePosWorld;  	// Camera/eye location in world coords.
   
-//   varying vec3 v_Norm1;				// Find 3D surface normal at each pix
-//   varying vec4 v_Position;			// pixel's 3D pos too -- in 'world' coords
-//   varying vec3 v_Kd;						// Find diffuse reflectance K_d per pix
-//     												// Ambient? Emissive? Specular? almost
-//   													// NEVER change per-vertex: I use'uniform'
+  varying vec3 v_Norm1;				// Find 3D surface normal at each pix
+  varying vec4 v_Position;			// pixel's 3D pos too -- in 'world' coords
+  varying vec3 v_Kd;						// Find diffuse reflectance K_d per pix
+    												// Ambient? Emissive? Specular? almost
+  													// NEVER change per-vertex: I use'uniform'
 
-//   void main() { 
-//      	// Normalize! !!IMPORTANT!! TROUBLE if you don't! 
-//      	// normals interpolated for each pixel aren't 1.0 in length any more!
-// 	  vec3 normal = normalize(v_Norm1); 
-// //	  vec3 normal = v_Normal; 
-//      	// Calculate the light direction vector, make it unit-length (1.0).
-// 	  vec3 lightDirection = normalize(u_Lamp0Pos.xyz - v_Position.xyz);
-//      	// The dot product of the light direction and the normal
-//      	// (use max() to discard any negatives from lights below the surface)
-//      	// (look in GLSL manual: what other functions would help?)
-// 	  float nDotL = max(dot(lightDirection, normal), 0.0); 
-//   	 	// The Blinn-Phong lighting model computes the specular term faster 
-//   	 	// because it replaces the (V*R)^shiny weighting with (H*N)^shiny,
-//   	 	// where 'halfway' vector H has a direction half-way between L and V"
-//   	 	// H = norm(norm(V) + norm(L)) 
-//   	 	// (see http://en.wikipedia.org/wiki/Blinn-Phong_shading_model)
-//     vec3 eyeDirection = normalize(u_eyePosWorld.xyz - v_Position.xyz); 
-// 	  vec3 H = normalize(lightDirection + eyeDirection); 
-// 	  float nDotH = max(dot(H, normal), 0.0); 
-// 			// (use max() to discard any negatives from lights below the surface)
-// 			// Apply the 'shininess' exponent K_e:
-// 	  float e02 = nDotH*nDotH; 
-// 	  float e04 = e02*e02; 
-// 	  float e08 = e04*e04; 
-// 		float e16 = e08*e08; 
-// 		float e32 = e16*e16;  
-// 		float e64 = e32*e32;
-// // Can you find a better way to do this? SEE GLSL 'pow()'.
-//      	// Calculate the final color from diffuse reflection and ambient reflection
-// 		vec3 emissive = u_Ke;
-//     vec3 ambient = u_Lamp0Amb * u_Ka;
-//     vec3 diffuse = u_Lamp0Diff * v_Kd * nDotL;
-//   	vec3 speculr = u_Lamp0Spec * u_Ks * e64;
-//     gl_FragColor = vec4(emissive + ambient + diffuse + speculr , 1.0);
-// //    gl_FragColor = vec4(emissive, 1.0);
-// //    gl_FragColor = vec4(emissive + ambient, 1.0);
-// //		gl_FragColor = vec4(emissive + ambient + diffuse, 1.0);
-// //    gl_FragColor = vec4(ambient + speculr , 1.0);
-//   }`;
+  void main() { 
+     	// Normalize! !!IMPORTANT!! TROUBLE if you don't! 
+     	// normals interpolated for each pixel aren't 1.0 in length any more!
+	  vec3 normal = normalize(v_Norm1); 
+  //	  vec3 normal = v_Normal; 
+     	// Calculate the light direction vector, make it unit-length (1.0).
+	  vec3 lightDirection = normalize(u_Lamp0Pos.xyz - v_Position.xyz);
+     	// The dot product of the light direction and the normal
+     	// (use max() to discard any negatives from lights below the surface)
+     	// (look in GLSL manual: what other functions would help?)
+	  float nDotL = max(dot(lightDirection, normal), 0.0); 
+  	 	// The Blinn-Phong lighting model computes the specular term faster 
+  	 	// because it replaces the (V*R)^shiny weighting with (H*N)^shiny,
+  	 	// where 'halfway' vector H has a direction half-way between L and V"
+  	 	// H = norm(norm(V) + norm(L)) 
+  	 	// (see http://en.wikipedia.org/wiki/Blinn-Phong_shading_model)
+    vec3 eyeDirection = normalize(u_eyePosWorld.xyz - v_Position.xyz); 
+	  vec3 H = normalize(lightDirection + eyeDirection); 
+	  float nDotH = max(dot(H, normal), 0.0); 
+			// (use max() to discard any negatives from lights below the surface)
+			// Apply the 'shininess' exponent K_e:
+	  float e02 = nDotH*nDotH; 
+	  float e04 = e02*e02; 
+	  float e08 = e04*e04; 
+		float e16 = e08*e08; 
+		float e32 = e16*e16;  
+		float e64 = e32*e32;
+// Can you find a better way to do this? SEE GLSL 'pow()'.
+     	// Calculate the final color from diffuse reflection and ambient reflection
+		vec3 emissive = u_Ke;
+    vec3 ambient = u_Lamp0Amb * u_Ka;
+    vec3 diffuse = u_Lamp0Diff * v_Kd * nDotL;
+  	vec3 speculr = u_Lamp0Spec * u_Ks * e64;
+    gl_FragColor = vec4(emissive + ambient + diffuse + speculr , 1.0);
+//    gl_FragColor = vec4(emissive, 1.0);
+//    gl_FragColor = vec4(emissive + ambient, 1.0);
+//		gl_FragColor = vec4(emissive + ambient + diffuse, 1.0);
+//    gl_FragColor = vec4(ambient + speculr , 1.0);
+  }`;
+  */
 
    `precision mediump float;
   varying vec3 v_Norm1;
@@ -1989,24 +1995,78 @@ function VBObox2() {
 	this.VERT_SRC =	//--------------------- VERTEX SHADER source code 
  `precision highp float;				// req'd in OpenGL ES if we use 'float'
   //
-  uniform mat4 u_ModelMatrix;
-  attribute vec4 a_Position;
-  attribute vec3 a_Color;
-  attribute float a_PtSize; 
-  varying vec3 v_Colr;
+  struct MatlT {                // Phong material's reflectances (K)
+    vec3 emit;
+    vec3 ambi;
+    vec3 diff;
+    vec3 spec;
+    int shiny;
+  };
+  
+  attribute vec4 a_Position;    // vertex position
+  attribute vec4 a_Normal;      // vertex normal vector
+  
+  uniform MatlT u_MatlSet[1];   // array of all materials
+  uniform mat4 u_MvpMatrix;     // model view projection matrix
+  uniform mat4 u_ModelMatrix;   // model matrix
+  uniform mat4 u_NormalMatrix;  // inverse transpose of ModelMatrix
+
+  varying vec3 v_Kd;            // diffuse reflectance
+  varying vec4 v_Position;      // position
+  varying vec3 v_Normal         // normal vector (w=0)
+
   //
   void main() {
-    gl_PointSize = a_PtSize;
-    gl_Position = u_ModelMatrix * a_Position;
-  	 v_Colr = a_Color;
-   }`;
+    gl_Position = u_MvpMatrix * a_Position;                     // cvv coordinate values; set screen position
+    v_Position = u_ModelMatrix * a_Position;                    // position of vertex (world coords)
+    v_Normal = normalize(vec3(u_NormalMatrix * a_Normal));      // get the surface normal of the vertex (world coords)
+    v_Kd = u_MatlSet[0].diff;                                   // from our struct of reflectances, pick out the diff
+
+  }`;
 
 	this.FRAG_SRC = //---------------------- FRAGMENT SHADER source code 
- `precision mediump float;
-  varying vec3 v_Colr;
+ `precision highp float;
+  precision highp int;
+  //
+  struct LampT {            // Phong light source -- illumination (I)
+    vec3 pos;               // (x,y,z,w), w=1.0 for local light and w=0.0 for distant light from x,y,z direction
+    vec3 ambi;
+    vec3 diff;
+    vec3 spec;
+  };
+
+  struct MatlT {            // Phong material's reflectances (K)
+    vec3 emit;
+    vec3 ambi;
+    vec3 diff;
+    vec3 spec;
+    int shiny;
+  };
+
+  uniform LampT u_LampSet[1];       // array of all light sources
+  uniform MatlT u_MatlSet[1];       // array of all materials
+  uniform vec3 u_eyePosWorld;       // eye location in world coords ---------------- what if we want interactive?
+
+  varying vec3 v_Normal;            // normal vector to each pixel
+  varying vec4 v_Position;          // a pixel's location in world coords
+  varying vec3 v_Kd;                // diffuse reflectance for the pixel
+
   void main() {
-    gl_FragColor = vec4(v_Colr, 1.0);
-//  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    vec3 normal = normalize(v_Normal);                                        // normalize
+    vec3 lightDirection = normalize(u_Lampset[0].pos - v_Position.xyz);       // light direction vector L (REMEMBER TO DO NEGATIVE OF THIS FOR reflect())
+    vec3 eyeDirection = normalize(u_eyePosWorld - v_Position.xyz);            // eye direction vector V
+    vec3 H = normalize(lightDirection + eyeDirection);                        // for Blinn-Phong
+    float nDotL = max(dot(lightDirection, normal), 0.0);                      // for the diffuse component
+    float nDotH = max(dot(H, normal), 0.0);                                   // for the shininess component
+    float e64 = pow(nDotH, float(u_MatlSet[0].shiny));                        // to the shininess power
+    
+    // Calculate the RGB of that pixel:
+
+    vec3 emissive = u_MatlSet[0].emit;                                        // the object's original 'light'
+    vec3 ambient = u_LampSet[0].ambi * u_MatlSet[0].ambi;    
+    vec3 diffuse = u_LampSet[0].diff * v_Kd * nDotL;  
+    vec3 speculr = u_LampSet[0].spec * u_MatlSet[0].spec * e64;
+    gl_FragColor = vec4(emissive + ambient + diffuse + speculr, 1.0);         // add to get final color of that pixel         
   }`;
 
 	this.vboContents = //---------------------------------------------------------
