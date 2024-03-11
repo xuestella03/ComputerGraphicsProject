@@ -529,104 +529,56 @@ function VBObox0() {
    `precision highp float;				// req'd in OpenGL ES if we use 'float'
     //
     uniform vec3 u_Kd;
+    uniform vec3 u_Ka;
+    uniform vec3 u_Ks;
+    uniform vec3 u_Ia;
+    uniform vec3 u_Id;
+    uniform vec3 u_Is;
+    uniform vec3 u_Ke;
+    uniform vec3 u_V;
+    uniform float u_shiny; 
+
     uniform mat4 u_ModelMatrix;
     uniform mat4 u_MvpMatrix;
     uniform mat4 u_NormalMatrix;
   
     attribute vec4 a_Pos1;
-    attribute vec3 a_Norm;
+    attribute vec3 a_Norm; // model space normal
   
-    varying vec3 v_Kd;
-    varying vec4 v_Position;
+    varying vec4 v_Position;  // world coords
     varying vec3 v_Norm1;
+    varying vec4 v_Color;
     //
     void main() {
-      gl_Position = u_MvpMatrix * a_Pos1;
-      // v_Position = u_ModelMatrix * a_Pos1; // new
-      v_Norm1 = a_Norm; // old, comment out
-      // v_Norm1 = normalize(vec3(u_NormalMatrix * vec4(a_Norm, 0.0))); // new
-      // v_Kd = u_Kd; // new
+      gl_Position = u_MvpMatrix * a_Pos1;   // relative to the camera
+      v_Norm1 = normalize(u_NormalMatrix * vec4(a_Norm, 0.0)).xyz;       // convert to world coords
+      v_Position = u_ModelMatrix * a_Pos1;    // convert position to world coords
+      vec3 lightPos = vec3(2, 0, 2);      // test light position
+      vec3 lightDir = normalize(lightPos - v_Position.xyz);       // normalize the direction vector for light
+      vec3 ambient = u_Ka * u_Ia;
+      vec3 diffuse = u_Id * u_Kd * dot(lightDir, v_Norm1);
+      vec3 R = reflect(-lightDir, v_Norm1); 
+      vec3 view = normalize(u_V - v_Position.xyz);       // vector from camera to vertex posn
+      float rDotV = dot(R, view);
+      vec3 specular = u_Is * u_Ks * pow(max(0.0, rDotV), u_shiny);
+      v_Color = vec4(u_Ke + ambient + diffuse + specular, 1.0);
+      
+
      }`;
   
   // /*
    // c) SHADED, sphere-like dots:
     this.FRAG_SRC = //---------------------- FRAGMENT SHADER source code 
-  //   `#ifdef GL_ES
-  //   precision mediump float;
-  //   #endif
-    
-  //   // first light source: (YOU write a second one...)
-  //   uniform vec4 u_Lamp0Pos; 			// Phong Illum: position
-  //   uniform vec3 u_Lamp0Amb;   		// Phong Illum: ambient
-  //   uniform vec3 u_Lamp0Diff;     // Phong Illum: diffuse
-  // 	uniform vec3 u_Lamp0Spec;			// Phong Illum: specular
-    
-  // 	// first material definition: you write 2nd, 3rd, etc.
-  //   uniform vec3 u_Ke;						// Phong Reflectance: emissive
-  //   uniform vec3 u_Ka;						// Phong Reflectance: ambient
-  // 	// Phong Reflectance: diffuse? -- use v_Kd instead for per-pixel value
-  //   uniform vec3 u_Ks;						// Phong Reflectance: specular
-  // //  uniform int u_Kshiny;				// Phong Reflectance: 1 < shiny < 200
-  // //	
-  //   uniform vec4 u_eyePosWorld;  	// Camera/eye location in world coords.
-    
-  //   varying vec3 v_Norm1;				// Find 3D surface normal at each pix
-  //   varying vec4 v_Position;			// pixel's 3D pos too -- in 'world' coords
-  //   varying vec3 v_Kd;						// Find diffuse reflectance K_d per pix
-  //     												// Ambient? Emissive? Specular? almost
-  //   													// NEVER change per-vertex: I use'uniform'
-  
-  //   void main() { 
-  //      	// Normalize! !!IMPORTANT!! TROUBLE if you don't! 
-  //      	// normals interpolated for each pixel aren't 1.0 in length any more!
-  // 	  vec3 normal = normalize(v_Norm1); 
-  // //	  vec3 normal = v_Normal; 
-  //      	// Calculate the light direction vector, make it unit-length (1.0).
-  // 	  vec3 lightDirection = normalize(u_Lamp0Pos.xyz - v_Position.xyz);
-  //      	// The dot product of the light direction and the normal
-  //      	// (use max() to discard any negatives from lights below the surface)
-  //      	// (look in GLSL manual: what other functions would help?)
-  // 	  float nDotL = max(dot(lightDirection, normal), 0.0); 
-  //   	 	// The Blinn-Phong lighting model computes the specular term faster 
-  //   	 	// because it replaces the (V*R)^shiny weighting with (H*N)^shiny,
-  //   	 	// where 'halfway' vector H has a direction half-way between L and V"
-  //   	 	// H = norm(norm(V) + norm(L)) 
-  //   	 	// (see http://en.wikipedia.org/wiki/Blinn-Phong_shading_model)
-  //     vec3 eyeDirection = normalize(u_eyePosWorld.xyz - v_Position.xyz); 
-  // 	  vec3 H = normalize(lightDirection + eyeDirection); 
-  // 	  float nDotH = max(dot(H, normal), 0.0); 
-  // 			// (use max() to discard any negatives from lights below the surface)
-  // 			// Apply the 'shininess' exponent K_e:
-  // 	  float e02 = nDotH*nDotH; 
-  // 	  float e04 = e02*e02; 
-  // 	  float e08 = e04*e04; 
-  // 		float e16 = e08*e08; 
-  // 		float e32 = e16*e16;  
-  // 		float e64 = e32*e32;
-  // // Can you find a better way to do this? SEE GLSL 'pow()'.
-  //      	// Calculate the final color from diffuse reflection and ambient reflection
-  // 		vec3 emissive = u_Ke;
-  //     vec3 ambient = u_Lamp0Amb * u_Ka;
-  //     vec3 diffuse = u_Lamp0Diff * v_Kd * nDotL;
-  //   	vec3 speculr = u_Lamp0Spec * u_Ks * e64;
-  //     gl_FragColor = vec4(emissive + ambient + diffuse + speculr , 1.0);
-  // //    gl_FragColor = vec4(emissive, 1.0);
-  // //    gl_FragColor = vec4(emissive + ambient, 1.0);
-  // //		gl_FragColor = vec4(emissive + ambient + diffuse, 1.0);
-  // //    gl_FragColor = vec4(ambient + speculr , 1.0);
-  //   }`;
-  
      `precision mediump float;
     varying vec3 v_Norm1;
+    varying vec4 v_Color;
     void main() {
-         gl_FragColor = vec4(v_Norm1.z, v_Norm1.z, v_Norm1.z ,1);
+         gl_FragColor = v_Color;
   
     }`;
-  // */
+  
     this.vboContents = //---------------------------------------------------------
-      new Float32Array ([					// Array of vertex attribute values we will
-                                  // transfer to GPU's vertex buffer object (VBO)
-        // 1 vertex per line: pos1 x,y,z,w;   colr1; r,g,b;   ptSiz1; 
+    new Float32Array ([					
         0.13819731964259963,-0.42531954978879127,-0.89442986388596235,1.0,0.13819731964259963,-0.42531954978879127,-0.89442986388596235, 
         0.36180353084445682,-0.58777919628799402,-0.72361165101145519,1.0,0.36180353084445682,-0.58777919628799402,-0.72361165101145519, 
         0.05279036938617958,-0.68818537725750784,-0.72361181819329923,1.0,0.05279036938617958,-0.68818537725750784,-0.72361181819329923, 
@@ -1641,16 +1593,7 @@ function VBObox0() {
     this.ModelMatrix = new Matrix4();	// Transforms CVV axes to model axes.
     this.NormalMatrix = new Matrix4();
     this.MvpMatrix = new Matrix4();
-    // this.u_eyePosWorld = new Vector4();
-    // this.u_Lamp0Pos = new Vector4();
-    // this.u_Lamp0Diff = new Vector3();
-    // this.u_Lamp0Amb = new Vector3();
-    // this.u_Lamp0Spec = new Vector3();
-  
-    // this.u_Ke = new Vector3();
-    // this.u_Ka = new Vector3();
-    // this.v_Kd = new Vector3();
-    // this.u_Ks = new Vector3();
+    
   
   
     this.u_ModelMatrixLoc;						// GPU location for u_ModelMat uniform
@@ -1742,9 +1685,38 @@ function VBObox0() {
     this.u_NormalMatrixLoc = gl.getUniformLocation(this.shaderLoc, 'u_NormalMatrix');
     this.u_MvpMatrixLoc = gl.getUniformLocation(this.shaderLoc, 'u_MvpMatrix');
     this.u_ModelMatrixLoc = gl.getUniformLocation(this.shaderLoc, 'u_ModelMatrix');
-    // var u_eyePosWorld = gl.getUniformLocation(gl.program, 'u_eyePosWorld');
-  
-  
+
+    /*uniform vec3 u_Kd;
+    uniform vec3 u_Ka;
+    uniform vec3 u_Ks;
+    uniform vec3 u_Ia;
+    uniform vec3 u_Id;
+    uniform vec3 u_Is;
+    uniform vec3 u_Ke;
+    uniform vec3 u_V;
+    uniform float u_shiny; */ 
+    this.u_KdLoc = gl.getUniformLocation(this.shaderLoc, 'u_Kd');
+    this.u_KaLoc = gl.getUniformLocation(this.shaderLoc, 'u_Ka');
+    this.u_KsLoc = gl.getUniformLocation(this.shaderLoc, 'u_Ks');
+    this.u_KeLoc = gl.getUniformLocation(this.shaderLoc, 'u_Ke');
+    this.u_IaLoc = gl.getUniformLocation(this.shaderLoc, 'u_Ia');
+    this.u_IsLoc = gl.getUniformLocation(this.shaderLoc, 'u_Is');
+    this.u_IdLoc = gl.getUniformLocation(this.shaderLoc, 'u_Id');
+    this.u_VLoc = gl.getUniformLocation(this.shaderLoc, 'u_V');
+    this.u_shinyLoc = gl.getUniformLocation(this.shaderLoc, 'u_shiny');
+
+    if (!this.u_KdLoc || !this.u_IaLoc) { 
+      console.log(this.constructor.name + 
+                  '.init() failed to get GPU location for u_Kd and u_Ia uniforms');
+      return;
+    }
+
+    if (!this.u_VLoc || !this.u_shinyLoc) { 
+      console.log(this.constructor.name + 
+                  '.init() failed to get GPU location for u_V and u_shiny uniforms');
+      return;
+    }
+
     if (!this.u_ModelMatrixLoc) { 
       console.log(this.constructor.name + 
                   '.init() failed to get GPU location for u_ModelMatrix uniform');
@@ -1879,9 +1851,10 @@ function VBObox0() {
     // Adjust values for our uniforms,
     this.ModelMatrix.setIdentity();
     // this.ModelMatrix.translate(1.0, -2.0, 0);
+    this.ModelMatrix.rotate(g_angleNow0, 0, 0, 1);
     this.NormalMatrix.setIdentity();
-    // this.NormalMatrix.setInverseOf(this.ModelMatrix);
-    // this.NormalMatrix.transpose();
+    this.NormalMatrix.setInverseOf(this.ModelMatrix);
+    this.NormalMatrix.transpose();
     this.MvpMatrix.set(g_worldMat);
     this.MvpMatrix.concat(this.ModelMatrix);
     
@@ -1906,6 +1879,26 @@ function VBObox0() {
     gl.uniformMatrix4fv(this.u_MvpMatrixLoc,	// GPU location of the uniform
                         false, 										// use matrix transpose instead?
                         this.MvpMatrix.elements);	// send data from Javascript.
+
+    /*uniform vec3 u_Kd;
+    uniform vec3 u_Ka;
+    uniform vec3 u_Ks;
+    uniform vec3 u_Ia;
+    uniform vec3 u_Id;
+    uniform vec3 u_Is;
+    uniform vec3 u_Ke;
+    uniform vec3 u_V;
+    uniform float u_shiny; */ 
+
+    gl.uniform3f(this.u_KdLoc, 0.4, 0.4, 0.4);
+    gl.uniform3f(this.u_KaLoc, 0.2, 0.2, 0.2);
+    gl.uniform3f(this.u_KsLoc, 0.9, 0.9, 0.9);
+    gl.uniform3f(this.u_KeLoc, 0.0, 0.0, 0.0);
+    gl.uniform3f(this.u_IdLoc, 0.7, 0.7, 0.7);
+    gl.uniform3f(this.u_IaLoc, 0.7, 0.7, 0.7);
+    gl.uniform3f(this.u_IsLoc, 0.7, 0.7, 0.7);
+    gl.uniform3f(this.u_VLoc, g_EyeX, g_EyeY, g_EyeZ);
+    gl.uniform1f(this.u_shinyLoc, 7);
   }
   
   VBObox1.prototype.draw = function() {
@@ -1986,7 +1979,7 @@ function VBObox0() {
   // values here, in this one coonstrutor function, ensures we can change them 
   // easily WITHOUT disrupting any other code, ever!
     
-    this.VERT_SRC =	//--------------------- VERTEX SHADER source code 
+    this.VERT_SRC =	//--------------------- VERTEX SHADER source code // v position, v normal
    `precision highp float;				// req'd in OpenGL ES if we use 'float'
     //
     uniform mat4 u_ModelMatrix;
