@@ -2023,9 +2023,72 @@ function VBObox0() {
         gl_FragColor = vec4(u_Ke + ambient + diffuse + blinnSpecular, 1.0);
 
     }`;
-  
+    var h = Math.sqrt(0.1875);
+	  var m = 0.5 * h;
     this.vboContents = //---------------------------------------------------------
-      new Float32Array ([					
+      new Float32Array ([	
+        //--------------------------------------------TRIPRISM (STARTS AT 0, LENGTH 24)
+        // Back Triangle
+      
+        -0.25,  -1*m, 0.0, 1.0, 	0.8, 0.0, 0.0, // 0 red
+        0.25,  -1*m, 0.0, 1.0,  	1.0, 0.6, 0.2, // 1 orange
+        0.0,    m,   0.0, 1.0,	0.0, 0.6, 0.6, // 2 cyan
+      
+        // Side 1 (cute color!)
+      
+        0.0,    m,   0.0, 1.0,	0.7, 0.4, 1.0, // 2 purple
+        0.0,    m,   0.5, 1.0,	0.0, 0.0, 0.6, // 5 blue
+        0.25,  -1*m, 0.0, 1.0,  	0.0, 0.6, 0.6, // 1 cyan
+      
+        0.25,  -1*m, 0.5, 1.0,  	1.0, 0.6, 0.2, // 4 orange
+        0.0,    m,   0.5, 1.0,	0.0, 0.0, 0.6, // 5 blue
+        0.25,  -1*m, 0.0, 1.0,  	0.0, 0.6, 0.6, // 1 cyan
+      
+        // Side 2
+      
+        -0.25,  -1*m, 0.0, 1.0, 	0.4, 0.8, 0.0, // 0 green
+        0.0,    m,   0.0, 1.0,	0.7, 0.4, 1.0, // 2 blue
+        -0.25,  -1*m, 0.5, 1.0, 	0.8, 0.0, 0.0, // 3 cyan
+      
+        0.0,    m,   0.5, 1.0,	1.0, 0.6, 0.2, // 5 orange
+        0.0,    m,   0.0, 1.0,	0.7, 0.4, 1.0, // 2 blue
+        -0.25,  -1*m, 0.5, 1.0, 	0.8, 0.0, 0.0, // 3 cyan
+      
+        // Side 3
+      
+        -0.25,  -1*m, 0.0, 1.0, 	0.0, 0.6, 0.6, // 0 cyan
+        0.25,  -1*m, 0.0, 1.0,  	0.7, 0.4, 1.0, // 1 purple
+        -0.25,  -1*m, 0.5, 1.0, 	0.8, 0.0, 0.0, // 3 red
+      
+        0.25,  -1*m, 0.5, 1.0,  	0.0, 0.0, 0.6, // 4 blue
+        0.25,  -1*m, 0.0, 1.0,  	0.7, 0.4, 1.0, // 1 purple
+        -0.25,  -1*m, 0.5, 1.0, 	0.8, 0.0, 0.0, // 3 red
+      
+        // Front Triangle
+        
+        -0.25,  -1*m, 0.5, 1.0, 	0.7, 0.4, 1.0, // 3 purple
+        0.25,  -1*m, 0.5, 1.0,  	0.0, 0.0, 0.6, // 4 blue
+        0.0,    m,   0.5, 1.0,	1.0, 0.6, 0.2, // 5 orange
+
+
+        //--------------------------------------------HEXPYR (STARTS AT 24, LENGTH 14)
+        -1*.5,   0, 	 0.0,  1.0,  	 0.6, 0.0, 0.0, // 4 red
+		    -1*.3,   .4,    0.0,  1.0,      0.8, 0.4, 0.0, // 5 orange
+        -1*.3,  -1*.4,  0.0,  1.0,      1.0, 1.0, 0.0, // 3 yellow
+        .3,      .4, 	 0.0,  1.0, 	 0.4, 0.0, 0.0, // 0 dark brown
+        .3,     -1*.4,  0.0,  1.0,      0.3, 0.3, 0.3, // 2 dark grey
+        .5,      0, 	 0.0,  1.0,  	 0.4, 0.0, 0.2, // 1 dark purple
+        0.0,    0.0,   0.8,  1.0,      0.0, 0.0, 0.0, // origin 2
+        .3,     -1*.4,  0.0,  1.0,      0.3, 0.3, 0.3, // 2 dark grey
+        0.0,    0.0,   0.8,  1.0,      0.0, 0.0, 0.0, // origin 2
+        -1*.3,  -1*.4,  0.0,  1.0,      1.0, 1.0, 0.0, // 3 yellow
+        0.0,    0.0,   0.8,  1.0,      0.0, 0.0, 0.0, // origin 2
+        -1*.5,   0, 	 0.0,  1.0,  	 0.6, 0.0, 0.0, // 4 red
+        0.0,    0.0,   0.8,  1.0,      0.0, 0.0, 0.0, // origin 2
+        -1*.3,   .4,    0.0,  1.0,      0.8, 0.4, 0.0, // 5 orange
+
+        
+        //--------------------------------------------SPHERE (STARTS AT 38, LENGTH 960)
         0.13819731964259963,-0.42531954978879127,-0.89442986388596235,1.0,0.13819731964259963,-0.42531954978879127,-0.89442986388596235, 
         0.36180353084445682,-0.58777919628799402,-0.72361165101145519,1.0,0.36180353084445682,-0.58777919628799402,-0.72361165101145519, 
         0.05279036938617958,-0.68818537725750784,-0.72361181819329923,1.0,0.05279036938617958,-0.68818537725750784,-0.72361181819329923, 
@@ -2989,7 +3052,7 @@ function VBObox0() {
         
     ]);
     
-    this.vboVerts = 960;							// # of vertices held in 'vboContents' array;
+    this.vboVerts = 984;							// # of vertices held in 'vboContents' array;
     this.FSIZE = this.vboContents.BYTES_PER_ELEMENT;
     this.vboBytes = this.vboContents.length * this.FSIZE;               
     this.vboStride = this.vboBytes / this.vboVerts;                             
@@ -2997,10 +3060,8 @@ function VBObox0() {
     //----------------------Attribute sizes
     this.vboFcount_a_Pos1 = 4;  
     this.vboFcount_a_Norm = 3;
-    console.assert((this.vboFcount_a_Pos1 +     
-    this.vboFcount_a_Norm) *  
-    this.FSIZE == this.vboStride, 
-    "Uh oh! VBObox2.vboStride disagrees with attribute-size values!");
+    console.assert((this.vboFcount_a_Pos1 +  this.vboFcount_a_Norm) *  this.FSIZE == this.vboStride, 
+      "Uh oh! VBObox2.vboStride disagrees with attribute-size values!");
     
     //----------------------Attribute offsets
     this.vboOffset_a_Pos1 = 0;    
@@ -3246,6 +3307,8 @@ function VBObox0() {
     }
     
     //--------------------------------------------SPHERE----------------------------------------------------
+
+    pushMatrix(this.ModelMatrix);
     this.ModelMatrix.setIdentity();
     this.ModelMatrix.rotate(g_angleNow0, 0, 0, 1);
     this.NormalMatrix.setIdentity();
@@ -3270,9 +3333,38 @@ function VBObox0() {
     gl.uniform1f(this.u_isBlinnLoc, isBlinnButton);
     gl.uniform3f(this.u_lightPosLoc, userLightx, userLighty, userLightz);
 
-    gl.drawArrays(gl.TRIANGLES, 0, 960);		
+    gl.drawArrays(gl.TRIANGLES, 38, 960);		
+    this.ModelMatrix = popMatrix();
 
     //----------------------------------------------TREE---------------------------------------------------
+
+    // pushMatrix(this.ModelMatrix);
+    // this.ModelMatrix.translate(2,2,0);
+    // this.NormalMatrix.setIdentity();
+    // this.NormalMatrix.setInverseOf(this.ModelMatrix);
+    // this.NormalMatrix.transpose();
+    // this.MvpMatrix.set(g_worldMat);
+    // this.MvpMatrix.concat(this.ModelMatrix);
+
+    // gl.uniformMatrix4fv(this.u_ModelMatrixLoc, false, this.ModelMatrix.elements);
+    // gl.uniformMatrix4fv(this.u_NormalMatrixLoc,	false, this.NormalMatrix.elements);	
+    // gl.uniformMatrix4fv(this.u_MvpMatrixLoc, false, this.MvpMatrix.elements);
+
+    // gl.uniform3f(this.u_KdLoc, 0.4, 0.4, 0.4);
+    // gl.uniform3f(this.u_KaLoc, 0.2, 0.2, 0.2);
+    // gl.uniform3f(this.u_KsLoc, 0.9, 0.9, 0.9);
+    // gl.uniform3f(this.u_KeLoc, 0.0, 0.0, 0.0);
+    // gl.uniform3f(this.u_IdLoc, userIdR, userIdG, userIdB);
+    // gl.uniform3f(this.u_IaLoc, userIaR, userIaG, userIaB);
+    // gl.uniform3f(this.u_IsLoc, userIsR, userIsG, userIsB);
+    // gl.uniform3f(this.u_VLoc, g_EyeX, g_EyeY, g_EyeZ);
+    // gl.uniform1f(this.u_shinyLoc, 7);
+    // gl.uniform1f(this.u_isBlinnLoc, isBlinnButton);
+    // gl.uniform3f(this.u_lightPosLoc, userLightx, userLighty, userLightz);
+
+    // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24);		
+    // this.ModelMatrix = popMatrix;
+
   }
   
   VBObox2.prototype.reload = function() {
