@@ -3337,33 +3337,247 @@ function VBObox0() {
     this.ModelMatrix = popMatrix();
 
     //----------------------------------------------TREE---------------------------------------------------
+    
+    // base
+    pushMatrix(this.ModelMatrix);
+    this.ModelMatrix.setIdentity();
+    this.ModelMatrix.translate(2,2,0);
+    this.ModelMatrix.scale(1.2,1.2,1.2);
+    this.NormalMatrix.setIdentity();
+    this.NormalMatrix.setInverseOf(this.ModelMatrix);
+    this.NormalMatrix.transpose();
+    this.MvpMatrix.set(g_worldMat);
+    this.MvpMatrix.concat(this.ModelMatrix);
+    
+    gl.uniformMatrix4fv(this.u_ModelMatrixLoc, false, this.ModelMatrix.elements);
+    gl.uniformMatrix4fv(this.u_NormalMatrixLoc,	false, this.NormalMatrix.elements);	
+    gl.uniformMatrix4fv(this.u_MvpMatrixLoc, false, this.MvpMatrix.elements);
+    gl.uniform3f(this.u_KdLoc, 0.0, 0.6, 0.4);
+    gl.uniform3f(this.u_KaLoc, 0.05, 0.05, 0.05);
+    gl.uniform3f(this.u_KsLoc, 0.2, 0.2, 0.2);
+    gl.uniform3f(this.u_KeLoc, 0.0, 0.0, 0.0);
+    gl.uniform1f(this.u_shinyLoc, 60.0);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 24, 14);
 
-    // pushMatrix(this.ModelMatrix);
-    // this.ModelMatrix.translate(2,2,0);
-    // this.NormalMatrix.setIdentity();
-    // this.NormalMatrix.setInverseOf(this.ModelMatrix);
-    // this.NormalMatrix.transpose();
-    // this.MvpMatrix.set(g_worldMat);
-    // this.MvpMatrix.concat(this.ModelMatrix);
+    // segment 1
+    pushMatrix(this.ModelMatrix);
+    // this.ModelMatrix.setIdentity();
+    this.ModelMatrix.translate(0,0,0.4);
+    this.ModelMatrix.scale(0.8,0.8,0.8);
+    this.ModelMatrix.rotate(g_treeAngle, 0, 1, 1);
+    this.NormalMatrix.setIdentity();
+    this.NormalMatrix.setInverseOf(this.ModelMatrix);
+    this.NormalMatrix.transpose();
+    this.MvpMatrix.set(g_worldMat);
+    this.MvpMatrix.concat(this.ModelMatrix);
+    
+    gl.uniformMatrix4fv(this.u_ModelMatrixLoc, false, this.ModelMatrix.elements);
+    gl.uniformMatrix4fv(this.u_NormalMatrixLoc,	false, this.NormalMatrix.elements);	
+    gl.uniformMatrix4fv(this.u_MvpMatrixLoc, false, this.MvpMatrix.elements);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 24, 14);
 
-    // gl.uniformMatrix4fv(this.u_ModelMatrixLoc, false, this.ModelMatrix.elements);
-    // gl.uniformMatrix4fv(this.u_NormalMatrixLoc,	false, this.NormalMatrix.elements);	
-    // gl.uniformMatrix4fv(this.u_MvpMatrixLoc, false, this.MvpMatrix.elements);
+    // segment 2
+    pushMatrix(this.ModelMatrix);
+    // this.ModelMatrix.setIdentity();
+    this.ModelMatrix.translate(0,0,0.6);
+    this.ModelMatrix.scale(0.7,0.7,0.7);
+    this.ModelMatrix.rotate(g_treeAngle, 0.0, 1, 1);
+    this.NormalMatrix.setIdentity();
+    this.NormalMatrix.setInverseOf(this.ModelMatrix);
+    this.NormalMatrix.transpose();
+    this.MvpMatrix.set(g_worldMat);
+    this.MvpMatrix.concat(this.ModelMatrix);
+    
+    gl.uniformMatrix4fv(this.u_ModelMatrixLoc, false, this.ModelMatrix.elements);
+    gl.uniformMatrix4fv(this.u_NormalMatrixLoc,	false, this.NormalMatrix.elements);	
+    gl.uniformMatrix4fv(this.u_MvpMatrixLoc, false, this.MvpMatrix.elements);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 24, 14);
 
-    // gl.uniform3f(this.u_KdLoc, 0.4, 0.4, 0.4);
-    // gl.uniform3f(this.u_KaLoc, 0.2, 0.2, 0.2);
-    // gl.uniform3f(this.u_KsLoc, 0.9, 0.9, 0.9);
-    // gl.uniform3f(this.u_KeLoc, 0.0, 0.0, 0.0);
-    // gl.uniform3f(this.u_IdLoc, userIdR, userIdG, userIdB);
-    // gl.uniform3f(this.u_IaLoc, userIaR, userIaG, userIaB);
-    // gl.uniform3f(this.u_IsLoc, userIsR, userIsG, userIsB);
-    // gl.uniform3f(this.u_VLoc, g_EyeX, g_EyeY, g_EyeZ);
-    // gl.uniform1f(this.u_shinyLoc, 7);
-    // gl.uniform1f(this.u_isBlinnLoc, isBlinnButton);
-    // gl.uniform3f(this.u_lightPosLoc, userLightx, userLighty, userLightz);
+    this.ModelMatrix = popMatrix();
+    this.ModelMatrix = popMatrix();
+    this.ModelMatrix = popMatrix();
 
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24);		
-    // this.ModelMatrix = popMatrix;
+    
+    //----------------------------------------------DINO
+
+    // body
+    pushMatrix(this.ModelMatrix);
+    this.ModelMatrix.translate(5,4,0.7);
+    this.ModelMatrix.scale(3,3,3);
+    this.ModelMatrix.rotate(90, 1, 0, 0);
+    this.NormalMatrix.setIdentity();
+    this.NormalMatrix.setInverseOf(this.ModelMatrix);
+    this.NormalMatrix.transpose();
+    this.MvpMatrix.set(g_worldMat);
+    this.MvpMatrix.concat(this.ModelMatrix);
+    
+    gl.uniformMatrix4fv(this.u_ModelMatrixLoc, false, this.ModelMatrix.elements);
+    gl.uniformMatrix4fv(this.u_NormalMatrixLoc,	false, this.NormalMatrix.elements);	
+    gl.uniformMatrix4fv(this.u_MvpMatrixLoc, false, this.MvpMatrix.elements);
+    gl.uniform3f(this.u_KdLoc, 0.34615,  0.3143,   0.0903);
+    gl.uniform3f(this.u_KaLoc, 0.105882, 0.058824, 0.113725);
+    gl.uniform3f(this.u_KsLoc, 0.333333, 0.333333, 0.521569);
+    gl.uniform3f(this.u_KeLoc, 0.0, 0.0, 0.0);
+    gl.uniform1f(this.u_shinyLoc, 100.2);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24); 
+
+    // neck
+    pushMatrix(this.ModelMatrix);
+    this.ModelMatrix.rotate(30, 3,0,0);
+    this.ModelMatrix.rotate(g_dinoAngle, 0, 0.25, 1);
+    this.ModelMatrix.scale(.25,.25,.25);
+    this.ModelMatrix.translate(0, 0.3, -0.5);
+    this.NormalMatrix.setIdentity();
+    this.NormalMatrix.setInverseOf(this.ModelMatrix);
+    this.NormalMatrix.transpose();
+    this.MvpMatrix.set(g_worldMat);
+    this.MvpMatrix.concat(this.ModelMatrix);
+    
+    gl.uniformMatrix4fv(this.u_ModelMatrixLoc, false, this.ModelMatrix.elements);
+    gl.uniformMatrix4fv(this.u_NormalMatrixLoc,	false, this.NormalMatrix.elements);	
+    gl.uniformMatrix4fv(this.u_MvpMatrixLoc, false, this.MvpMatrix.elements);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24); 
+
+    // head
+    pushMatrix(this.ModelMatrix);
+    this.ModelMatrix.rotate(30,3,0,0);
+    this.ModelMatrix.scale(2,2,2);
+    this.ModelMatrix.translate(0,-0.1,-0.4);
+    this.NormalMatrix.setIdentity();
+    this.NormalMatrix.setInverseOf(this.ModelMatrix);
+    this.NormalMatrix.transpose();
+    this.MvpMatrix.set(g_worldMat);
+    this.MvpMatrix.concat(this.ModelMatrix);
+    
+    gl.uniformMatrix4fv(this.u_ModelMatrixLoc, false, this.ModelMatrix.elements);
+    gl.uniformMatrix4fv(this.u_NormalMatrixLoc,	false, this.NormalMatrix.elements);	
+    gl.uniformMatrix4fv(this.u_MvpMatrixLoc, false, this.MvpMatrix.elements);
+    gl.uniform3f(this.u_KdLoc, 0.714,    0.4284,   0.18144);
+    gl.uniform3f(this.u_KaLoc, 0.2125,   0.1275,   0.054);
+    gl.uniform3f(this.u_KsLoc, 0.393548, 0.271906, 0.166721);
+    gl.uniform3f(this.u_KeLoc, 0.0, 0.0, 0.0);
+    gl.uniform1f(this.u_shinyLoc, 25.6);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24); 
+
+    // mouth - top
+    pushMatrix(this.ModelMatrix);
+    this.ModelMatrix = popMatrix();
+
+    // mouth - bottom
+    pushMatrix(this.ModelMatrix);
+    this.ModelMatrix = popMatrix();
+    this.ModelMatrix = popMatrix();
+    this.ModelMatrix = popMatrix();
+
+    // tail
+    // 1
+    this.ModelMatrix.translate(0,0,0.45);
+    pushMatrix(this.ModelMatrix);
+    this.ModelMatrix.rotate(g_treeAngle,0,1,1);
+    this.ModelMatrix.scale(0.6,0.6,0.6);
+    this.NormalMatrix.setIdentity();
+    this.NormalMatrix.setInverseOf(this.ModelMatrix);
+    this.NormalMatrix.transpose();
+    this.MvpMatrix.set(g_worldMat);
+    this.MvpMatrix.concat(this.ModelMatrix);
+    
+    gl.uniformMatrix4fv(this.u_ModelMatrixLoc, false, this.ModelMatrix.elements);
+    gl.uniformMatrix4fv(this.u_NormalMatrixLoc,	false, this.NormalMatrix.elements);	
+    gl.uniformMatrix4fv(this.u_MvpMatrixLoc, false, this.MvpMatrix.elements);
+    gl.uniform3f(this.u_KdLoc, 1.0,      0.829,    0.829);
+    gl.uniform3f(this.u_KaLoc, 0.25,     0.20725,  0.20725);
+    gl.uniform3f(this.u_KsLoc, 0.296648, 0.296648, 0.296648);
+    gl.uniform3f(this.u_KeLoc, 0.0, 0.0, 0.0);
+    gl.uniform1f(this.u_shinyLoc, 11.264);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24); 
+
+    // 2
+    pushMatrix(this.ModelMatrix);
+    this.ModelMatrix.translate(0,0,0.5);
+    this.ModelMatrix.rotate(g_treeAngle,0,1,1);
+    this.ModelMatrix.scale(0.7,0.7,0.7);
+    this.NormalMatrix.setIdentity();
+    this.NormalMatrix.setInverseOf(this.ModelMatrix);
+    this.NormalMatrix.transpose();
+    this.MvpMatrix.set(g_worldMat);
+    this.MvpMatrix.concat(this.ModelMatrix);
+    
+    gl.uniformMatrix4fv(this.u_ModelMatrixLoc, false, this.ModelMatrix.elements);
+    gl.uniformMatrix4fv(this.u_NormalMatrixLoc,	false, this.NormalMatrix.elements);	
+    gl.uniformMatrix4fv(this.u_MvpMatrixLoc, false, this.MvpMatrix.elements);
+    gl.uniform3f(this.u_KdLoc, 0.6,     0.0,    0.0);
+    gl.uniform3f(this.u_KaLoc, 0.1,     0.1,    0.1);
+    gl.uniform3f(this.u_KsLoc, 0.6,     0.6,    0.6);
+    gl.uniform3f(this.u_KeLoc, 0.0, 0.0, 0.0);
+    gl.uniform1f(this.u_shinyLoc, 100.0);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24); 
+    // 3 
+    pushMatrix(this.ModelMatrix);
+    this.ModelMatrix.translate(0,0,0.5);
+    this.ModelMatrix.rotate(g_treeAngle,0,1,1);
+    this.ModelMatrix.scale(0.7,0.7,0.7);
+    this.NormalMatrix.setIdentity();
+    this.NormalMatrix.setInverseOf(this.ModelMatrix);
+    this.NormalMatrix.transpose();
+    this.MvpMatrix.set(g_worldMat);
+    this.MvpMatrix.concat(this.ModelMatrix);
+    
+    gl.uniformMatrix4fv(this.u_ModelMatrixLoc, false, this.ModelMatrix.elements);
+    gl.uniformMatrix4fv(this.u_NormalMatrixLoc,	false, this.NormalMatrix.elements);	
+    gl.uniformMatrix4fv(this.u_MvpMatrixLoc, false, this.MvpMatrix.elements);
+    gl.uniform3f(this.u_KdLoc, 0.75164,  0.60648,  0.22648);
+    gl.uniform3f(this.u_KaLoc, 0.24725,  0.1995,   0.0745);
+    gl.uniform3f(this.u_KsLoc, 0.628281, 0.555802, 0.366065);
+    gl.uniform3f(this.u_KeLoc, 0.0, 0.0, 0.0);
+    gl.uniform1f(this.u_shinyLoc, 51.2);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24); 
+    // 4
+    pushMatrix(this.ModelMatrix);
+    this.ModelMatrix.translate(0,0,0.5);
+    this.ModelMatrix.rotate(g_treeAngle,0,1,1);
+    this.ModelMatrix.scale(0.7,0.7,0.7);
+    this.NormalMatrix.setIdentity();
+    this.NormalMatrix.setInverseOf(this.ModelMatrix);
+    this.NormalMatrix.transpose();
+    this.MvpMatrix.set(g_worldMat);
+    this.MvpMatrix.concat(this.ModelMatrix);
+    
+    gl.uniformMatrix4fv(this.u_ModelMatrixLoc, false, this.ModelMatrix.elements);
+    gl.uniformMatrix4fv(this.u_NormalMatrixLoc,	false, this.NormalMatrix.elements);	
+    gl.uniformMatrix4fv(this.u_MvpMatrixLoc, false, this.MvpMatrix.elements);
+    gl.uniform3f(this.u_KdLoc, 0.427451, 0.470588, 0.541176);
+    gl.uniform3f(this.u_KaLoc, 0.105882, 0.058824, 0.113725);
+    gl.uniform3f(this.u_KsLoc, 0.333333, 0.333333, 0.521569);
+    gl.uniform3f(this.u_KeLoc, 0.0, 0.0, 0.0);
+    gl.uniform1f(this.u_shinyLoc, 9.8);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24); 
+    // 5
+    pushMatrix(this.ModelMatrix);
+    this.ModelMatrix.translate(0,0,0.5);
+    this.ModelMatrix.rotate(g_treeAngle,0,1,1);
+    this.ModelMatrix.scale(0.7,0.7,0.7);
+    this.NormalMatrix.setIdentity();
+    this.NormalMatrix.setInverseOf(this.ModelMatrix);
+    this.NormalMatrix.transpose();
+    this.MvpMatrix.set(g_worldMat);
+    this.MvpMatrix.concat(this.ModelMatrix);
+    
+    gl.uniformMatrix4fv(this.u_ModelMatrixLoc, false, this.ModelMatrix.elements);
+    gl.uniformMatrix4fv(this.u_NormalMatrixLoc,	false, this.NormalMatrix.elements);	
+    gl.uniformMatrix4fv(this.u_MvpMatrixLoc, false, this.MvpMatrix.elements);
+    gl.uniform3f(this.u_KdLoc, 0.6,     0.0,    0.0);
+    gl.uniform3f(this.u_KaLoc, 0.1,     0.1,    0.1);
+    gl.uniform3f(this.u_KsLoc, 0.6,     0.6,    0.6);
+    gl.uniform3f(this.u_KeLoc, 0.0, 0.0, 0.0);
+    gl.uniform1f(this.u_shinyLoc, 100.0);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 24); 
+
+    this.ModelMatrix = popMatrix();
+    this.ModelMatrix = popMatrix();
+    this.ModelMatrix = popMatrix();
+    this.ModelMatrix = popMatrix();
+    this.ModelMatrix = popMatrix();
+    this.ModelMatrix = popMatrix();
 
   }
   

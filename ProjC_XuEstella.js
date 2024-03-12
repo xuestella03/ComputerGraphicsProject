@@ -101,6 +101,11 @@ var g_angleMin1  =  60.0;
 var g_angleNow2  =  0.0; 			  // Current rotation angle, in degrees.
 var g_angleRate2 = -62.0;				// Rotation angle rate, in degrees/second.
 
+var g_treeAngle = 0.0;
+var g_treeAngleRate = 40.0;
+
+var g_dinoAngle = 0.0;
+var g_dinoAngleRate = 45.0;
                                 //---------------
 var g_posNow0 =  0.0;           // current position
 var g_posRate0 = 0.6;           // position change rate, in distance/second.
@@ -503,6 +508,18 @@ function animate() {
     g_angleNow0 = g_angleNow0 + (g_angleRate0 * elapsed) / 1000.0;
   if(g_angleNow0 > 45.0) g_angleNow0 = g_angleNow0 - 360.0;
   if(g_angleNow0 <-45.0) g_angleNow0 = g_angleNow0 + 360.0;
+
+  g_treeAngle = g_treeAngle + (g_treeAngleRate * elapsed) / 1000.0;
+  if (g_treeAngle > 180.0) g_treeAngle = g_treeAngle - 360.0;
+  if (g_treeAngle < -180.0) g_treeAngle = g_treeAngle + 360.0;
+  if (g_treeAngle > 20.0 && g_treeAngleRate > 0) g_treeAngleRate *= -1.0;
+  if (g_treeAngle < -20.0&& g_treeAngleRate < 0) g_treeAngleRate *= -1.0;
+
+  g_dinoAngle = g_dinoAngle + (g_dinoAngleRate * elapsed) / 1000.0;
+  if (g_dinoAngle > 45.0) g_dinoAngle = g_dinoAngle - 360.0;
+  if (g_dinoAngle < -45.0) g_dinoAngle = g_dinoAngle + 360.0;
+  if (g_dinoAngle > 20.0 && g_dinoAngleRate > 0) g_dinoAngleRate *= -1.0;
+  if (g_dinoAngle < -20.0&& g_dinoAngleRate < 0) g_dinoAngleRate *= -1.0;
   }
 
 function myKeyDown(kev) {
