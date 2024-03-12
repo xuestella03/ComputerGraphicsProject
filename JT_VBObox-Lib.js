@@ -568,13 +568,7 @@ function VBObox0() {
       vec3 H = normalize(lightDir + view);
       float nDotH = max(dot(H, v_Norm1), 0.0);
       vec3 blinnSpecular = u_Is * u_Ks * pow(nDotH, u_shiny);
-
-      // if (u_isBlinn != -1.0) 
-      //   vec3 specular = u_Is * u_Ks * pow(max(0.0, rDotV), u_shiny);
-      // vec3 specular = u_Is * u_Ks * pow(max(0.0, rDotV), u_shiny);
-      // else
-      // if (u_isBlinn == 1)
-      
+     
       
       if (u_isBlinn < 0.5)
         v_Color = vec4(u_Ke + ambient + diffuse + specular, 1.0);
