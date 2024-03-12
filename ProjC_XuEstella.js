@@ -371,6 +371,99 @@ function usrLightZ() {
   userLightz = parseFloat(UsrTxt);     // convert string to float number 
 }
 
+var userIaR = 0.7;
+var userIaG = 0.7;
+var userIaB = 0.7;
+var userIdR = 0.7;
+var userIdG = 0.7;
+var userIdB = 0.7;
+var userIsR = 0.7;
+var userIsG = 0.7;
+var userIsB = 0.7;
+var isLightOn = 1; 
+
+function lightOnOff() {
+  if(isLightOn != 1) { // turn on
+    userIaR = 0.7;
+    userIaG = 0.7;
+    userIaB = 0.7;
+    userIdR = 0.7;
+    userIdG = 0.7;
+    userIdB = 0.7;
+    userIsR = 0.7;
+    userIsG = 0.7;
+    userIsB = 0.7;
+    isLightOn = 1;
+  } 			
+  else { // turn off 
+    userIaR = 0.0;
+    userIaG = 0.0;
+    userIaB = 0.0;
+    userIdR = 0.0;
+    userIdG = 0.0;
+    userIdB = 0.0;
+    userIsR = 0.0;
+    userIsG = 0.0;
+    userIsB = 0.0;
+    isLightOn = 0;
+  } 								
+  console.log('isLightOn: '+isLightOn);
+}
+
+function usrIaR() {
+  var UsrTxt = document.getElementById('usrIaR').value;	
+  console.log('usrIaR: UsrTxt:', UsrTxt); // print in console, and
+  userIaR = parseFloat(UsrTxt);     // convert string to float number 
+}
+
+function usrIaG() {
+  var UsrTxt = document.getElementById('usrIaG').value;	
+  console.log('usrIaG: UsrTxt:', UsrTxt); // print in console, and
+  userIaG = parseFloat(UsrTxt);     // convert string to float number 
+}
+
+function usrIaB() {
+  var UsrTxt = document.getElementById('usrIaB').value;	
+  console.log('usrIaB: UsrTxt:', UsrTxt); // print in console, and
+  userIaB = parseFloat(UsrTxt);     // convert string to float number 
+}
+
+function usrIdR() {
+  var UsrTxt = document.getElementById('usrIdR').value;	
+  console.log('usrIdR: UsrTxt:', UsrTxt); // print in console, and
+  userIdR = parseFloat(UsrTxt);     // convert string to float number 
+}
+
+function usrIdG() {
+  var UsrTxt = document.getElementById('usrIdG').value;	
+  console.log('usrIdG: UsrTxt:', UsrTxt); // print in console, and
+  userIdG = parseFloat(UsrTxt);     // convert string to float number 
+}
+
+function usrIdB() {
+  var UsrTxt = document.getElementById('usrIdB').value;	
+  console.log('usrIdB: UsrTxt:', UsrTxt); // print in console, and
+  userIdB = parseFloat(UsrTxt);     // convert string to float number 
+}
+
+function usrIsR() {
+  var UsrTxt = document.getElementById('usrIsR').value;	
+  console.log('usrIsR: UsrTxt:', UsrTxt); // print in console, and
+  userIsR = parseFloat(UsrTxt);     // convert string to float number 
+}
+
+function usrIsG() {
+  var UsrTxt = document.getElementById('usrIsG').value;	
+  console.log('usrIsG: UsrTxt:', UsrTxt); // print in console, and
+  userIsG = parseFloat(UsrTxt);     // convert string to float number 
+}
+
+function usrIsB() {
+  var UsrTxt = document.getElementById('usrIsB').value;	
+  console.log('usrIsB: UsrTxt:', UsrTxt); // print in console, and
+  userIsB = parseFloat(UsrTxt);     // convert string to float number 
+}
+
 var g_EyeX = 5, g_EyeY = 5, g_EyeZ = 3;
 var theta = 0, deltaZ = 0;
 // var vpAspect = g_canvasID.width/(4*g_canvasID.height/3);

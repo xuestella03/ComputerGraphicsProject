@@ -1892,9 +1892,9 @@ function VBObox0() {
     gl.uniform3f(this.u_KaLoc, 0.2, 0.2, 0.2);
     gl.uniform3f(this.u_KsLoc, 0.9, 0.9, 0.9);
     gl.uniform3f(this.u_KeLoc, 0.0, 0.0, 0.0);
-    gl.uniform3f(this.u_IdLoc, 0.7, 0.7, 0.7);
-    gl.uniform3f(this.u_IaLoc, 0.7, 0.7, 0.7);
-    gl.uniform3f(this.u_IsLoc, 0.7, 0.7, 0.7);
+    gl.uniform3f(this.u_IdLoc, userIdR, userIdG, userIdB);
+    gl.uniform3f(this.u_IaLoc, userIaR, userIaG, userIaB);
+    gl.uniform3f(this.u_IsLoc, userIsR, userIsG, userIsB);
     gl.uniform3f(this.u_VLoc, g_EyeX, g_EyeY, g_EyeZ);
     gl.uniform1f(this.u_shinyLoc, 7);
     gl.uniform1f(this.u_isBlinnLoc, isBlinnButton);
@@ -3156,6 +3156,7 @@ function VBObox0() {
                      this.u_IaLoc = gl.getUniformLocation(this.shaderLoc, 'u_Ia');
                      this.u_IsLoc = gl.getUniformLocation(this.shaderLoc, 'u_Is');
                      this.u_IdLoc = gl.getUniformLocation(this.shaderLoc, 'u_Id');
+                     
                      this.u_VLoc = gl.getUniformLocation(this.shaderLoc, 'u_V');
                      this.u_shinyLoc = gl.getUniformLocation(this.shaderLoc, 'u_shiny');
 
@@ -3341,9 +3342,9 @@ function VBObox0() {
     gl.uniform3f(this.u_KaLoc, 0.2, 0.2, 0.2);
     gl.uniform3f(this.u_KsLoc, 0.9, 0.9, 0.9);
     gl.uniform3f(this.u_KeLoc, 0.0, 0.0, 0.0);
-    gl.uniform3f(this.u_IdLoc, 0.7, 0.7, 0.7);
-    gl.uniform3f(this.u_IaLoc, 0.7, 0.7, 0.7);
-    gl.uniform3f(this.u_IsLoc, 0.7, 0.7, 0.7);
+    gl.uniform3f(this.u_IdLoc, userIdR, userIdG, userIdB);
+    gl.uniform3f(this.u_IaLoc, userIaR, userIaG, userIaB);
+    gl.uniform3f(this.u_IsLoc, userIsR, userIsG, userIsB);
     gl.uniform3f(this.u_VLoc, g_EyeX, g_EyeY, g_EyeZ);
     gl.uniform1f(this.u_shinyLoc, 7);
     gl.uniform1f(this.u_isBlinnLoc, isBlinnButton);

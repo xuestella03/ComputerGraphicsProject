@@ -10,28 +10,54 @@
     Please use a browser that supports "canvas"
     </canvas>
     <p>
-      <button type="button" onclick="VBO0toggle()">VBO-0 hide/show</button>
-      <button type="button" onclick="VBO1toggle()">VBO-1 hide/show</button>
-      <button type="button" onclick="VBO2toggle()">VBO-2 hide/show</button>
+      <button type="button" onclick="VBO0toggle()">Ground Plane & Axes hide/show</button>
+      <button type="button" onclick="VBO1toggle()">Gouraud Shading hide/show</button>
+      <button type="button" onclick="VBO2toggle()">Phong Shading hide/show</button>
     </p>
-    <hr>
     <p>
       <button type="button" onClick="blinnPhong()">Blinn-Phong Lighting</button>
       <button type="button" onClick="blinnPhongOff()">Phong Lighting</button>
     </p>
     <hr>
+    <button type="button" onClick="lightOnOff()">Light on/off</button>
     Input light x-value: 
     <input id='usrLightX' size=10> 
-		<button type="button" onClick='usrLightX()'>Submit</button><BR> 
-		<div id= EditBoxOut></div>
+		<button type="button" onClick='usrLightX()'>Submit</button> 
     Input light y-value: 
     <input id='usrLightY' size=10> 
-		<button type="button" onClick='usrLightY()'>Submit</button><BR> 
-		<div id= EditBoxOut></div>
+		<button type="button" onClick='usrLightY()'>Submit</button> 
     Input light z-value: 
     <input id='usrLightZ' size=10> 
 		<button type="button" onClick='usrLightZ()'>Submit</button><BR> 
-		<div id= EditBoxOut></div>
+    <hr>
+    Input light ambient R: 
+    <input id='usrIaR' size=10> 
+		<button type="button" onClick='usrIaR()'>Submit</button>
+    Input light ambient G: 
+    <input id='usrIaG' size=10> 
+		<button type="button" onClick='usrIaG()'>Submit</button>
+    Input light ambient B: 
+    <input id='usrIaB' size=10> 
+		<button type="button" onClick='usrIaB()'>Submit</button><BR>
+    Input light diffuse R: 
+    <input id='usrIdR' size=10> 
+		<button type="button" onClick='usrIdR()'>Submit</button>
+    Input light diffuse G: 
+    <input id='usrIdG' size=10> 
+		<button type="button" onClick='usrIdG()'>Submit</button>
+    Input light diffuse B: 
+    <input id='usrIdB' size=10> 
+		<button type="button" onClick='usrIdB()'>Submit</button><BR>
+    Input light specular R: 
+    <input id='usrIsR' size=10> 
+		<button type="button" onClick='usrIsR()'>Submit</button>
+    Input light specular G: 
+    <input id='usrIsG' size=10> 
+		<button type="button" onClick='usrIsG()'>Submit</button>
+    Input light specular B: 
+    <input id='usrIsB' size=10> 
+		<button type="button" onClick='usrIsB()'>Submit</button><BR>
+
     <br>
 		<span id='KeyDownResult'  > </span> <!-- myKeyDown() modifies this span object -->		
 		<br>
