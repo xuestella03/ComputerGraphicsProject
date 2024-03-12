@@ -479,8 +479,9 @@ function setCamera() {
 // ALL VBObox objects.  REPLACE This with your own camera-control code.
   // console.log('g_canvasID width,height=', g_canvasID.width, g_canvasID.height);
   // console.log('what should be vpAspect', g_canvasID.width/(4*g_canvasID.height/3));
-  gl.viewport(0,0,g_canvasID.width, 7*g_canvasID.height/10);
-  var vpAspect = g_canvasID.width/(7*g_canvasID.height/10);
+  gl.viewport(0,0,g_canvasID.width, g_canvasID.height);
+  // var vpAspect = g_canvasID.width/(7*g_canvasID.height/10);
+  var vpAspect = g_canvasID.width/g_canvasID.height;
 	g_worldMat.setIdentity();
 	g_worldMat.perspective(40,   // FOVY: top-to-bottom vertical image angle, in degrees
                       vpAspect,   // Image Aspect Ratio: camera lens width/height

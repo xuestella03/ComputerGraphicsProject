@@ -3583,7 +3583,7 @@ function VBObox0() {
     // base
     pushMatrix(this.ModelMatrix);
     this.ModelMatrix.setIdentity();
-    this.ModelMatrix.translate(-4.0,-3.0,0.0);
+    this.ModelMatrix.translate(-4.0,-3.0,1);
     this.ModelMatrix.rotate(g_treeAngle, 0, 0, 1);
     this.NormalMatrix.setIdentity();
     this.NormalMatrix.setInverseOf(this.ModelMatrix);

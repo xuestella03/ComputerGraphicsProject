@@ -9,16 +9,17 @@
     <canvas id="webgl" width="1900" height="600">
     Please use a browser that supports "canvas"
     </canvas>
+    Click these buttons to get a combination of Gouraud/Phong Shading and Phong/Blinn-Phong Shading. Note that all objects besides the sphere use Phong Shading. 
     <p>
       <button type="button" onclick="VBO0toggle()">Ground Plane & Axes hide/show</button>
       <button type="button" onclick="VBO1toggle()">Gouraud Shading hide/show</button>
       <button type="button" onclick="VBO2toggle()">Phong Shading hide/show</button>
-    </p>
-    <p>
       <button type="button" onClick="blinnPhong()">Blinn-Phong Lighting</button>
       <button type="button" onClick="blinnPhongOff()">Phong Lighting</button>
     </p>
     <hr>
+    Input x, y, and z values for the light position. If you turn the light off and then back on, it will return to its default position.
+    <p>
     <button type="button" onClick="lightOnOff()">Light on/off</button>
     Input light x-value: 
     <input id='usrLightX' size=10> 
@@ -29,7 +30,9 @@
     Input light z-value: 
     <input id='usrLightZ' size=10> 
 		<button type="button" onClick='usrLightZ()'>Submit</button><BR> 
-    <hr>
+    </p>
+    Input RGB values for the ambient, diffuse, and specular terms.
+    <p>
     Input light ambient R: 
     <input id='usrIaR' size=10> 
 		<button type="button" onClick='usrIaR()'>Submit</button>
@@ -57,7 +60,7 @@
     Input light specular B: 
     <input id='usrIsB' size=10> 
 		<button type="button" onClick='usrIsB()'>Submit</button><BR>
-
+    </p>
     <br>
 		<span id='KeyDownResult'  > </span> <!-- myKeyDown() modifies this span object -->		
 		<br>
