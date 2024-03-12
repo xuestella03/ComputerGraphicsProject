@@ -541,6 +541,8 @@ function VBObox0() {
     uniform mat4 u_ModelMatrix;
     uniform mat4 u_MvpMatrix;
     uniform mat4 u_NormalMatrix;
+
+    uniform float u_isBlinn;
   
     attribute vec4 a_Pos1;
     attribute vec3 a_Norm; // model space normal
@@ -561,7 +563,23 @@ function VBObox0() {
       vec3 view = normalize(u_V - v_Position.xyz);       // vector from camera to vertex posn
       float rDotV = dot(R, view);
       vec3 specular = u_Is * u_Ks * pow(max(0.0, rDotV), u_shiny);
-      v_Color = vec4(u_Ke + ambient + diffuse + specular, 1.0);
+
+      // for blinn-phong
+      vec3 H = normalize(lightDir + view);
+      float nDotH = max(dot(H, v_Norm1), 0.0);
+      vec3 blinnSpecular = u_Is * u_Ks * pow(nDotH, u_shiny);
+
+      // if (u_isBlinn != -1.0) 
+      //   vec3 specular = u_Is * u_Ks * pow(max(0.0, rDotV), u_shiny);
+      // vec3 specular = u_Is * u_Ks * pow(max(0.0, rDotV), u_shiny);
+      // else
+      // if (u_isBlinn == 1)
+      
+      
+      if (u_isBlinn < 0.5)
+        v_Color = vec4(u_Ke + ambient + diffuse + specular, 1.0);
+      else
+        v_Color = vec4(u_Ke + ambient + diffuse + blinnSpecular, 1.0);
       
 
      }`;
@@ -1705,6 +1723,14 @@ function VBObox0() {
     this.u_VLoc = gl.getUniformLocation(this.shaderLoc, 'u_V');
     this.u_shinyLoc = gl.getUniformLocation(this.shaderLoc, 'u_shiny');
 
+    this.u_isBlinnLoc = gl.getUniformLocation(this.shaderLoc, 'u_isBlinn');
+
+    if (!this.u_isBlinnLoc) { 
+      console.log(this.constructor.name + 
+                  '.init() failed to get GPU location for u_isBlinn uniform');
+      return;
+    }
+
     if (!this.u_KdLoc || !this.u_IaLoc) { 
       console.log(this.constructor.name + 
                   '.init() failed to get GPU location for u_Kd and u_Ia uniforms');
@@ -1732,30 +1758,7 @@ function VBObox0() {
                   '.init() failed to get GPU location for u_MvpMatrix uniform');
       return;
     }
-  /*
-    var u_Lamp0Pos  = gl.getUniformLocation(gl.program, 	'u_Lamp0Pos');
-    var u_Lamp0Amb  = gl.getUniformLocation(gl.program, 	'u_Lamp0Amb');
-    var u_Lamp0Diff = gl.getUniformLocation(gl.program, 	'u_Lamp0Diff');
-    var u_Lamp0Spec	= gl.getUniformLocation(gl.program,		'u_Lamp0Spec');
-    console.log('lamps in');
-    if( !u_Lamp0Pos || !u_Lamp0Amb	) {//|| !u_Lamp0Diff	) { // || !u_Lamp0Spec	) {
-      console.log('Failed to get the Lamp0 storage locations');
-      return;
-    }
-  
-    // ... for Phong material/reflectance:
-    var u_Ke = gl.getUniformLocation(gl.program, 'u_Ke');
-    var u_Ka = gl.getUniformLocation(gl.program, 'u_Ka');
-    // var v_Kd = gl.getUniformLocation(gl.program, 'v_Kd');
-    var u_Ks = gl.getUniformLocation(gl.program, 'u_Ks');
-  //	var u_Kshiny = gl.getUniformLocation(gl.program, 'u_Kshiny');
-    
-    if(!u_Ke || !u_Ka// || !v_Kd 
-  //		 || !u_Ks || !u_Kshiny
-       ) {
-      console.log('Failed to get the Phong Reflectance storage locations');
-      return;
-    }*/
+ 
   }
   
   VBObox1.prototype.switchToMe = function () {
@@ -1899,6 +1902,7 @@ function VBObox0() {
     gl.uniform3f(this.u_IsLoc, 0.7, 0.7, 0.7);
     gl.uniform3f(this.u_VLoc, g_EyeX, g_EyeY, g_EyeZ);
     gl.uniform1f(this.u_shinyLoc, 7);
+    gl.uniform1f(this.u_isBlinnLoc, isBlinnButton);
   }
   
   VBObox1.prototype.draw = function() {

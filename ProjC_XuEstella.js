@@ -312,6 +312,7 @@ console.log("wait b4 draw: ", b4Wait, "drawWait: ", drawWait, "mSec");
 */
 }
 
+var isBlinnButton = 0;
 function VBO0toggle() {
 //=============================================================================
 // Called when user presses HTML-5 button 'Show/Hide VBO0'.
@@ -334,6 +335,16 @@ function VBO2toggle() {
   if(g_show2 != 1) g_show2 = 1;			// show,
   else g_show2 = 0;									// hide.
   console.log('g_show2: '+g_show2);
+}
+
+function blinnPhong() {
+  isBlinnButton = 1;
+  console.log('blinn-phong on');
+}
+
+function blinnPhongOff() {
+  isBlinnButton = 0;
+  console.log('blinn-phong off');
 }
 
 var g_EyeX = 5, g_EyeY = 5, g_EyeZ = 3;

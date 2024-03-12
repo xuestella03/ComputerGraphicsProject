@@ -6,13 +6,15 @@
   </head>
 
   <body onload="main()" onresize="drawResize()">
-    <canvas id="webgl" width="1800" height="600">
+    <canvas id="webgl" width="1900" height="600">
     Please use a browser that supports "canvas"
     </canvas>
     <p>
       <button type="button" onclick="VBO0toggle()">VBO-0 hide/show</button>
       <button type="button" onclick="VBO1toggle()">VBO-1 hide/show</button>
       <button type="button" onclick="VBO2toggle()">VBO-2 hide/show</button>
+      <button type="button" onClick="blinnPhong()">Blinn-Phong on</button>
+      <button type="button" onClick="blinnPhongOff()">Blinn-Phong off</button>
     </p>
     <br>
 		<span id='KeyDownResult'  > KeyDown:    </span> <!-- myKeyDown() modifies this span object -->		
