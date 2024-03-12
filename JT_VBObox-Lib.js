@@ -542,6 +542,7 @@ function VBObox0() {
     uniform mat4 u_MvpMatrix;
     uniform mat4 u_NormalMatrix;
 
+    uniform vec3 u_lightPos;
     uniform float u_isBlinn;
   
     attribute vec4 a_Pos1;
@@ -555,8 +556,7 @@ function VBObox0() {
       gl_Position = u_MvpMatrix * a_Pos1;   // relative to the camera
       v_Norm1 = normalize(u_NormalMatrix * vec4(a_Norm, 0.0)).xyz;       // convert to world coords
       v_Position = u_ModelMatrix * a_Pos1;    // convert position to world coords
-      vec3 lightPos = vec3(2, 0, 2);      // test light position
-      vec3 lightDir = normalize(lightPos - v_Position.xyz);       // normalize the direction vector for light
+      vec3 lightDir = normalize(u_lightPos - v_Position.xyz);       // normalize the direction vector for light
       vec3 ambient = u_Ka * u_Ia;
       vec3 diffuse = u_Id * u_Kd * dot(lightDir, v_Norm1);
       vec3 R = reflect(-lightDir, v_Norm1); 
@@ -1717,6 +1717,7 @@ function VBObox0() {
     this.u_VLoc = gl.getUniformLocation(this.shaderLoc, 'u_V');
     this.u_shinyLoc = gl.getUniformLocation(this.shaderLoc, 'u_shiny');
 
+    this.u_lightPosLoc = gl.getUniformLocation(this.shaderLoc, 'u_lightPos');
     this.u_isBlinnLoc = gl.getUniformLocation(this.shaderLoc, 'u_isBlinn');
 
     if (!this.u_isBlinnLoc) { 
@@ -1897,6 +1898,7 @@ function VBObox0() {
     gl.uniform3f(this.u_VLoc, g_EyeX, g_EyeY, g_EyeZ);
     gl.uniform1f(this.u_shinyLoc, 7);
     gl.uniform1f(this.u_isBlinnLoc, isBlinnButton);
+    gl.uniform3f(this.u_lightPosLoc, userLightx, userLighty, userLightz);
   }
   
   VBObox1.prototype.draw = function() {
@@ -2014,6 +2016,7 @@ function VBObox0() {
     uniform vec3 u_V;   // same as u_eyePosWorld
     uniform float u_shiny;
 
+    uniform vec3 u_lightPos;
     uniform float u_isBlinn;
 
     varying vec4 v_Position;  // world coords
@@ -2023,8 +2026,7 @@ function VBObox0() {
 
     void main() {
       
-      vec3 lightPos = vec3(2, 0, 2);      // test light position
-      vec3 lightDir = normalize(lightPos - v_Position.xyz);       // normalize the direction vector for light
+      vec3 lightDir = normalize(u_lightPos - v_Position.xyz);       // normalize the direction vector for light
       vec3 ambient = u_Ka * u_Ia;
       vec3 diffuse = u_Id * v_Kd * dot(lightDir, v_Norm1);
       vec3 R = reflect(-lightDir, v_Norm1); 
@@ -3156,6 +3158,8 @@ function VBObox0() {
                      this.u_IdLoc = gl.getUniformLocation(this.shaderLoc, 'u_Id');
                      this.u_VLoc = gl.getUniformLocation(this.shaderLoc, 'u_V');
                      this.u_shinyLoc = gl.getUniformLocation(this.shaderLoc, 'u_shiny');
+
+                     this.u_lightPosLoc = gl.getUniformLocation(this.shaderLoc, 'u_lightPos');
                  
                      this.u_isBlinnLoc = gl.getUniformLocation(this.shaderLoc, 'u_isBlinn');
                  
@@ -3164,6 +3168,12 @@ function VBObox0() {
                                    '.init() failed to get GPU location for u_isBlinn uniform');
                        return;
                      }
+
+                     if (!this.u_lightPosLoc) { 
+                      console.log(this.constructor.name + 
+                                  '.init() failed to get GPU location for u_lightPos uniform');
+                      return;
+                    }
                  
                      if (!this.u_KdLoc || !this.u_IaLoc) { 
                        console.log(this.constructor.name + 
@@ -3191,7 +3201,7 @@ function VBObox0() {
                        console.log(this.constructor.name + 
                                    '.init() failed to get GPU location for u_MvpMatrix uniform');
                        return;
-                     }
+                     } 
   }
   
   VBObox2.prototype.switchToMe = function() {
@@ -3337,6 +3347,7 @@ function VBObox0() {
     gl.uniform3f(this.u_VLoc, g_EyeX, g_EyeY, g_EyeZ);
     gl.uniform1f(this.u_shinyLoc, 7);
     gl.uniform1f(this.u_isBlinnLoc, isBlinnButton);
+    gl.uniform3f(this.u_lightPosLoc, userLightx, userLighty, userLightz);
   }
   
   VBObox2.prototype.draw = function() {

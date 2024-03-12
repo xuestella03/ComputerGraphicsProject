@@ -313,6 +313,9 @@ console.log("wait b4 draw: ", b4Wait, "drawWait: ", drawWait, "mSec");
 }
 
 var isBlinnButton = 0;
+var userLightx = 2;
+var userLighty = 0;
+var userLightz = 2;
 function VBO0toggle() {
 //=============================================================================
 // Called when user presses HTML-5 button 'Show/Hide VBO0'.
@@ -345,6 +348,27 @@ function blinnPhong() {
 function blinnPhongOff() {
   isBlinnButton = 0;
   console.log('blinn-phong off');
+}
+
+function usrLightX() {
+  var UsrTxt = document.getElementById('usrLightX').value;	
+  // document.getElementById('EditBoxOut').innerHTML ='You Typed: '+UsrTxt;
+  console.log('usrLightX: UsrTxt:', UsrTxt); // print in console, and
+  userLightx = parseFloat(UsrTxt);     // convert string to float number 
+}
+
+function usrLightY() {
+  var UsrTxt = document.getElementById('usrLightY').value;	
+  // document.getElementById('EditBoxOut').innerHTML ='You Typed: '+UsrTxt;
+  console.log('usrLightY: UsrTxt:', UsrTxt); // print in console, and
+  userLighty = parseFloat(UsrTxt);     // convert string to float number 
+}
+
+function usrLightZ() {
+  var UsrTxt = document.getElementById('usrLightZ').value;	
+  // document.getElementById('EditBoxOut').innerHTML ='You Typed: '+UsrTxt;
+  console.log('usrLightZ: UsrTxt:', UsrTxt); // print in console, and
+  userLightz = parseFloat(UsrTxt);     // convert string to float number 
 }
 
 var g_EyeX = 5, g_EyeY = 5, g_EyeZ = 3;
@@ -408,13 +432,13 @@ function myKeyDown(kev) {
                 "\n--kev.altKey:",  kev.altKey,   "\t--kev.metaKey:", kev.metaKey);
   
   // and report EVERYTHING on webpage:
-    document.getElementById('KeyDownResult').innerHTML = ''; // clear old results
-    document.getElementById('KeyModResult' ).innerHTML = ''; 
-    // key details:
-    document.getElementById('KeyModResult' ).innerHTML = 
-          "   --kev.code:"+kev.code   +"      --kev.key:"+kev.key+
-      "<br>--kev.ctrlKey:"+kev.ctrlKey+" --kev.shiftKey:"+kev.shiftKey+
-      "<br>--kev.altKey:"+kev.altKey +"  --kev.metaKey:"+kev.metaKey;
+    // document.getElementById('KeyDownResult').innerHTML = ''; // clear old results
+    // document.getElementById('KeyModResult' ).innerHTML = ''; 
+    // // key details:
+    // document.getElementById('KeyModResult' ).innerHTML = 
+    //       "   --kev.code:"+kev.code   +"      --kev.key:"+kev.key+
+    //   "<br>--kev.ctrlKey:"+kev.ctrlKey+" --kev.shiftKey:"+kev.shiftKey+
+    //   "<br>--kev.altKey:"+kev.altKey +"  --kev.metaKey:"+kev.metaKey;
    
     switch(kev.code) {
     // 	case "KeyP":
@@ -434,7 +458,7 @@ function myKeyDown(kev) {
         
       case "KeyW":
         console.log("a/A key: Strafe LEFT!\n");
-        document.getElementById('KeyDownResult').innerHTML =  
+        // document.getElementById('KeyDownResult').innerHTML =  
         'myKeyDown() found a/A key. Strafe LEFT!';
         g_EyeX += 0.1 * Math.cos(theta); 
         g_EyeY += 0.1 * Math.sin(theta);
@@ -442,7 +466,7 @@ function myKeyDown(kev) {
         break;
         case "KeyS":
         console.log("a/A key: Strafe LEFT!\n");
-        document.getElementById('KeyDownResult').innerHTML =  
+        // document.getElementById('KeyDownResult').innerHTML =  
         'myKeyDown() found a/A key. Strafe LEFT!';
         g_EyeX -= 0.1 * Math.cos(theta); 
         g_EyeY -= 0.1 * Math.sin(theta);
@@ -451,7 +475,7 @@ function myKeyDown(kev) {
   
       case "KeyA":
         console.log("a/A key: Strafe LEFT!\n");
-        document.getElementById('KeyDownResult').innerHTML =  
+        // document.getElementById('KeyDownResult').innerHTML =  
         'myKeyDown() found a/A key. Strafe LEFT!';
         g_EyeX -= 0.1 * Math.sin(theta); 
         g_EyeY += 0.1 * Math.cos(theta);
@@ -459,7 +483,7 @@ function myKeyDown(kev) {
   
       case "KeyD":
         console.log("a/A key: Strafe LEFT!\n");
-        document.getElementById('KeyDownResult').innerHTML =  
+        // document.getElementById('KeyDownResult').innerHTML =  
         'myKeyDown() found a/A key. Strafe LEFT!';
         g_EyeX += 0.1 * Math.sin(theta); 
         g_EyeY -= 0.1 * Math.cos(theta);
@@ -468,13 +492,13 @@ function myKeyDown(kev) {
     
       case "ArrowUp":
         console.log("d/D key: Strafe RIGHT!\n");
-        document.getElementById('KeyDownResult').innerHTML = 
+        // document.getElementById('KeyDownResult').innerHTML = 
         'Up Arrow: tilt up';
         deltaZ += .07;
         break;	
       case "ArrowDown":
         console.log("s/S key: Move BACK!\n");
-        document.getElementById('KeyDownResult').innerHTML = 
+        // document.getElementById('KeyDownResult').innerHTML = 
         'Down Arrow: tilt down';
         deltaZ -= .07;
         break;
@@ -482,20 +506,20 @@ function myKeyDown(kev) {
       case "ArrowLeft": 	
         console.log(' left-arrow.');
         // and print on webpage in the <div> element with id='Result':
-          document.getElementById('KeyDownResult').innerHTML =
+          // document.getElementById('KeyDownResult').innerHTML =
           'myKeyDown(): Left Arrow='+kev.keyCode;
           theta+=.05; 
         break;
       case "ArrowRight":
         console.log('right-arrow.');
-          document.getElementById('KeyDownResult').innerHTML =
+          // document.getElementById('KeyDownResult').innerHTML =
           'myKeyDown():Right Arrow:keyCode='+kev.keyCode;
           theta-=.05;
           break;
       
       default:
         console.log("UNUSED!");
-        document.getElementById('KeyDownResult').innerHTML =
+        // document.getElementById('KeyDownResult').innerHTML =
           'myKeyDown(): UNUSED!';
         break;
     }
